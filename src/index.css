@@ -209,6 +209,11 @@
 }
 
 /* Admin resizable table – rows & columns */
+.admin-table {
+  background: hsl(var(--card));
+  backdrop-filter: blur(20px);
+}
+
 .admin-table th,
 .admin-table td {
   position: relative;
@@ -216,6 +221,7 @@
 
 .admin-table tr.row-selected {
   background: hsl(var(--primary) / 0.08);
+  box-shadow: inset 3px 0 0 hsl(var(--primary));
 }
 
 .admin-table .col-resize-handle {
