@@ -20,6 +20,8 @@ import ContentPage from "@/pages/ContentPage";
 import KnowledgePage from "@/pages/KnowledgePage";
 import SchedulePage from "@/pages/SchedulePage";
 import PersonDetailPage from "@/pages/PersonDetailPage";
+import ShopsPage from "@/pages/ShopsPage";
+import ProtocolsPage from "@/pages/ProtocolsPage";
 import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -52,6 +54,8 @@ function AppRoutes() {
       <Route path="/stands" element={<ProtectedRoute><StandsPage /></ProtectedRoute>} />
       <Route path="/stands/:id" element={<ProtectedRoute><StandDetailPage /></ProtectedRoute>} />
       <Route path="/content" element={<ProtectedRoute><ContentPage /></ProtectedRoute>} />
+      <Route path="/shops" element={<ProtectedRoute><ShopsPage /></ProtectedRoute>} />
+      <Route path="/protocols" element={<ProtectedRoute><ProtocolsPage /></ProtectedRoute>} />
       <Route path="/knowledge" element={<ProtectedRoute><KnowledgePage /></ProtectedRoute>} />
       <Route path="/schedule" element={<ProtectedRoute><SchedulePage /></ProtectedRoute>} />
       <Route path="*" element={<NotFound />} />

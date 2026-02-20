@@ -45,7 +45,9 @@ const navItems: NavItem[] = [
   { title: "Flota", url: "/fleet", icon: Truck },
   { title: "Testery", url: "/testers", icon: FlaskConical },
   { title: "Stoiska", url: "/stands", icon: Store },
+  { title: "Sklepy", url: "/shops", icon: Store },
   { title: "Kontenty", url: "/content", icon: FileText },
+  { title: "Protokoły", url: "/protocols", icon: FileText },
   { title: "Baza Wiedzy", url: "/knowledge", icon: BookOpen },
   { title: "Grafik", url: "/schedule", icon: CalendarClock, adminOnly: true },
 ];
@@ -95,8 +97,8 @@ export default function AppLayout({ children }: AppLayoutProps) {
               exit={isMobile ? { x: expanded ? -220 : -72 } : { x: 0 }}
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
               className={`
-                ${isMobile ? "fixed z-50" : "relative"}
-                flex flex-col min-h-screen
+                ${isMobile ? "fixed z-50" : "sticky top-0 self-start"}
+                flex flex-col h-screen
                 bg-sidebar border-r border-sidebar-border
                 ${expanded ? "items-stretch" : "items-center"}
               `}

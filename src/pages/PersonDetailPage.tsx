@@ -119,7 +119,7 @@ export default function PersonDetailPage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {days.map((day) => {
+                  {[...days].reverse().map((day) => {
                     const dateStr = format(day, "yyyy-MM-dd");
                     const dayEvents = personEvents.filter((ev) => ev.date === dateStr);
                     const isWeekend = day.getDay() === 0 || day.getDay() === 6;
