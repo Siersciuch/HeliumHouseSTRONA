@@ -6,6 +6,8 @@ import { getEventsByDate, type EventTrip } from "@/data/mock-events";
 import { Truck as TruckIcon, Play, FileText, Warehouse } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/contexts/AuthContext";
+import { mockPeople } from "@/data/mock-data";
 import busImage from "@/assets/bus.png";
 
 const DAYS_SHORT = ["Ndz", "Pon", "Wt", "Śr", "Czw", "Pt", "Sob"];
@@ -104,6 +106,20 @@ interface EventDetailPanelProps {
 
 function EventDetailPanel({ event, onClose }: EventDetailPanelProps) {
   const navigate = useNavigate();
+  const { user, isImpersonating, realUser } = useAuth();
+  const isAdmin = isImpersonating ? realUser?.role === "admin" : user?.role === "admin";
+
+  // Check if current user is assigned to this event's trip
+  const isAssigned = useMemo(() => {
+    if (!event || !user) return false;
+    if (isAdmin) return true;
+    // Check by matching user name to event crew
+    if (event.crew.includes(user.name)) return true;
+    // Check by matching user to person trips
+    const person = mockPeople.find((p) => p.name === user.name);
+    if (person && person.trips.includes(event.id)) return true;
+    return false;
+  }, [event, user, isAdmin]);
 
   if (!event) {
     return (
@@ -142,13 +158,15 @@ function EventDetailPanel({ event, onClose }: EventDetailPanelProps) {
         <button onClick={onClose} className="text-muted-foreground hover:text-foreground text-sm">✕</button>
       </div>
 
-      <Button
-        className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-bold text-base py-6"
-        onClick={() => navigate("/trip-started")}
-      >
-        <Play className="h-5 w-5 mr-2" />
-        Rozpocznij przejazd
-      </Button>
+      {isAssigned && (
+        <Button
+          className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-bold text-base py-6"
+          onClick={() => navigate("/trip-started")}
+        >
+          <Play className="h-5 w-5 mr-2" />
+          Rozpocznij przejazd
+        </Button>
+      )}
 
       <div className="space-y-3 text-sm">
         <div>
