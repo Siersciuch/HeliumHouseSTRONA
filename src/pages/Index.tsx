@@ -1,5 +1,5 @@
-import React, { useMemo } from "react";
-import { addDays, format, isToday, isTomorrow, isYesterday, getDay } from "date-fns";
+import React, { useMemo, useRef, useEffect } from "react";
+import { addDays, format, isToday, getDay, startOfYear, endOfYear, differenceInDays } from "date-fns";
 import { pl } from "date-fns/locale";
 import { motion } from "framer-motion";
 import { getEventsByDate, type EventTrip } from "@/data/mock-events";
@@ -7,30 +7,16 @@ import { Truck as TruckIcon, ArrowRight } from "lucide-react";
 
 const DAYS_PL = ["Niedziela", "Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek", "Sobota"];
 
-function getDayLabel(date: Date): string {
-  if (isYesterday(date)) return "Wczoraj";
-  if (isToday(date)) return "Dziś";
-  if (isTomorrow(date)) return "Jutro";
-  // Check day after tomorrow
-  const dayAfterTomorrow = addDays(new Date(), 2);
-  if (format(date, "yyyy-MM-dd") === format(dayAfterTomorrow, "yyyy-MM-dd")) return "Pojutrze";
-  return DAYS_PL[getDay(date)];
-}
-
 type TileSize = "large" | "medium" | "small";
 
 function getTileSize(date: Date): TileSize {
   if (isToday(date)) return "large";
-  if (isTomorrow(date) || format(date, "yyyy-MM-dd") === format(addDays(new Date(), 2), "yyyy-MM-dd")) return "medium";
   return "small";
 }
 
 function getTileBgClass(date: Date): string {
-  if (isYesterday(date)) return "bg-muted/60 border-muted-foreground/20";
   if (isToday(date)) return "border-success/50 bg-success/10";
-  if (isTomorrow(date) || format(date, "yyyy-MM-dd") === format(addDays(new Date(), 2), "yyyy-MM-dd"))
-    return "border-warning/40 bg-warning/8";
-  return "border-primary/20 bg-primary/5";
+  return "border-border/40 bg-card/50";
 }
 
 function getStatusColor(status: EventTrip["status"]): string {
@@ -72,38 +58,37 @@ interface DayTileProps {
 }
 
 function DayTile({ date, size, events, onSelectEvent }: DayTileProps) {
-  const label = getDayLabel(date);
   const bgClass = getTileBgClass(date);
   const dayNum = format(date, "d");
   const monthName = format(date, "LLLL", { locale: pl });
+  const dayName = DAYS_PL[getDay(date)];
 
-  const minH = size === "large" ? "min-h-[180px]" : size === "medium" ? "min-h-[120px]" : "min-h-[90px]";
-  const padding = size === "large" ? "p-5" : size === "medium" ? "p-4" : "p-3";
+  const minH = size === "large" ? "min-h-[140px]" : "min-h-[60px]";
+  const padding = size === "large" ? "p-4" : "p-3";
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 15 }}
-      animate={{ opacity: 1, y: 0 }}
-      className={`rounded-xl border ${bgClass} ${minH} ${padding} transition-all`}
-    >
-      <div className="flex items-baseline gap-3 mb-3">
-        <span className={`font-bold ${size === "large" ? "text-3xl" : size === "medium" ? "text-2xl" : "text-xl"}`}>
+    <div className={`rounded-xl border ${bgClass} ${minH} ${padding} transition-all`}>
+      <div className="flex items-baseline gap-3 mb-2">
+        <span className={`font-bold ${size === "large" ? "text-2xl" : "text-lg"}`}>
           {dayNum}
         </span>
-        <span className="text-sm text-muted-foreground">{label}</span>
-        <span className="text-xs text-muted-foreground/60">{monthName}</span>
+        <span className="text-sm text-muted-foreground">{monthName}</span>
+        <span className="text-xs text-muted-foreground/60">{dayName}</span>
+        {isToday(date) && (
+          <span className="text-[10px] font-semibold bg-success/20 text-success rounded-full px-2 py-0.5">DZIŚ</span>
+        )}
       </div>
 
       {events.length > 0 ? (
-        <div className={`flex flex-wrap gap-2 ${size === "small" ? "gap-1.5" : ""}`}>
+        <div className="flex flex-wrap gap-2">
           {events.map((ev) => (
             <BusChip key={ev.id} event={ev} onClick={() => onSelectEvent?.(ev)} />
           ))}
         </div>
       ) : (
-        <p className="text-xs text-muted-foreground/50 italic">Brak wyjazdów</p>
+        <p className="text-xs text-muted-foreground/40 italic">Brak wyjazdów</p>
       )}
-    </motion.div>
+    </div>
   );
 }
 
@@ -175,37 +160,57 @@ function EventDetailPanel({ event, onClose }: EventDetailPanelProps) {
 
 export default function DashboardPage() {
   const [selectedEvent, setSelectedEvent] = React.useState<EventTrip | null>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const todayRef = useRef<HTMLDivElement>(null);
 
-  // Generate days: yesterday, today, +5 more days
+  // Full year: Dec 31 on top → Jan 1 on bottom (reversed so future is up)
   const days = useMemo(() => {
-    const today = new Date();
+    const now = new Date();
+    const yearStart = startOfYear(now);
+    const yearEnd = endOfYear(now);
+    const totalDays = differenceInDays(yearEnd, yearStart) + 1;
+
     const result: { date: Date; events: EventTrip[] }[] = [];
-    for (let i = -1; i <= 6; i++) {
-      const d = addDays(today, i);
+    // Build from Dec 31 down to Jan 1
+    for (let i = totalDays - 1; i >= 0; i--) {
+      const d = addDays(yearStart, i);
       const dateStr = format(d, "yyyy-MM-dd");
       result.push({ date: d, events: getEventsByDate(dateStr) });
     }
     return result;
   }, []);
 
+  // Scroll to today on mount
+  useEffect(() => {
+    if (todayRef.current) {
+      todayRef.current.scrollIntoView({ block: "center" });
+    }
+  }, []);
+
   return (
     <div className="flex gap-4 h-[calc(100vh-5rem)]">
-      {/* Calendar tiles — 2/3 */}
-      <div className="w-2/3 overflow-y-auto pr-2 space-y-3 scrollbar-thin">
+      {/* Calendar tiles — 3/4 */}
+      <div
+        ref={scrollRef}
+        className="w-3/4 overflow-y-auto pr-2 space-y-2"
+        style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+      >
+        <style>{`.hide-scrollbar::-webkit-scrollbar { display: none; }`}</style>
         <h1 className="text-xl font-bold sticky top-0 bg-background/80 backdrop-blur-sm py-2 z-10">Kalendarz</h1>
         {days.map(({ date, events }) => (
-          <DayTile
-            key={format(date, "yyyy-MM-dd")}
-            date={date}
-            size={getTileSize(date)}
-            events={events}
-            onSelectEvent={setSelectedEvent}
-          />
+          <div key={format(date, "yyyy-MM-dd")} ref={isToday(date) ? todayRef : undefined}>
+            <DayTile
+              date={date}
+              size={getTileSize(date)}
+              events={events}
+              onSelectEvent={setSelectedEvent}
+            />
+          </div>
         ))}
       </div>
 
-      {/* Detail panel — 1/3 */}
-      <div className="w-1/3 bg-card border border-border rounded-xl p-5 overflow-y-auto">
+      {/* Detail panel — 1/4 */}
+      <div className="w-1/4 bg-card border border-border rounded-xl p-4 overflow-y-auto">
         <EventDetailPanel event={selectedEvent} onClose={() => setSelectedEvent(null)} />
       </div>
     </div>
