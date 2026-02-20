@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { mockTesters } from "@/data/mock-data";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { EditableCell } from "@/components/EditableCell";
 
 const statusColor: Record<string, string> = {
   "dostępny": "bg-emerald-500/20 text-emerald-400",
@@ -21,7 +22,7 @@ export default function TestersPage() {
           <div key={cat} className="space-y-3">
             <h2 className="text-lg font-semibold text-foreground/80">{cat}</h2>
             <div className="bg-card border border-border rounded-xl overflow-hidden">
-              <Table>
+              <Table className="admin-table">
                 <TableHeader>
                   <TableRow>
                     <TableHead className="w-10">LP</TableHead>
@@ -37,18 +38,18 @@ export default function TestersPage() {
                 <TableBody>
                   {items.map((t, i) => (
                     <TableRow key={t.id}>
-                      <TableCell className="text-muted-foreground">{i + 1}</TableCell>
-                      <TableCell className="font-medium">{t.name}</TableCell>
-                      <TableCell className="text-center">{t.quantity > 0 ? t.quantity : "—"}</TableCell>
-                      <TableCell className="text-center">{t.outCount > 0 ? t.outCount : "—"}</TableCell>
-                      <TableCell className="text-muted-foreground font-mono text-xs">{t.nfcCode || "—"}</TableCell>
-                      <TableCell className="text-muted-foreground">{t.assignedEvent || "—"}</TableCell>
-                      <TableCell>
+                      <EditableCell value={String(i + 1)} className="text-muted-foreground" />
+                      <EditableCell value={t.name} className="font-medium" />
+                      <EditableCell value={t.quantity > 0 ? String(t.quantity) : "—"} className="text-center" />
+                      <EditableCell value={t.outCount > 0 ? String(t.outCount) : "—"} className="text-center" />
+                      <EditableCell value={t.nfcCode || "—"} className="text-muted-foreground font-mono text-xs" />
+                      <EditableCell value={t.assignedEvent || "—"} className="text-muted-foreground" />
+                      <EditableCell value={t.status} className="">
                         <span className={`text-xs font-medium px-2.5 py-1 rounded-full ${statusColor[t.status]}`}>
                           {t.status}
                         </span>
-                      </TableCell>
-                      <TableCell className="text-muted-foreground text-xs">{t.notes || "—"}</TableCell>
+                      </EditableCell>
+                      <EditableCell value={t.notes || "—"} className="text-muted-foreground text-xs" />
                     </TableRow>
                   ))}
                 </TableBody>

@@ -3,12 +3,8 @@ import { motion } from "framer-motion";
 import { mockEvents, type EventTrip } from "@/data/mock-events";
 import { ArrowLeft, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableRow,
-} from "@/components/ui/table";
+import { Table, TableBody, TableRow } from "@/components/ui/table";
+import { EditableCell } from "@/components/EditableCell";
 
 function statusLabel(s: EventTrip["status"]) {
   switch (s) {
@@ -28,13 +24,7 @@ function statusClass(s: EventTrip["status"]) {
   }
 }
 
-function Val({ v }: { v: string | string[] | undefined }) {
-  if (!v || (Array.isArray(v) && v.length === 0)) return <span className="text-muted-foreground">—</span>;
-  if (Array.isArray(v)) return <span>{v.join(", ")}</span>;
-  return <span>{v}</span>;
-}
-
-function AlarmVal({ items, label }: { items: string[]; label: string }) {
+function AlarmVal({ items }: { items: string[] }) {
   if (!items || items.length === 0) return <span className="text-emerald-400 text-xs">Komplet</span>;
   return (
     <span className="flex items-center gap-1.5 text-destructive">
@@ -62,35 +52,35 @@ export default function EventDetailPage() {
 
   const eventName = ev.eventName || [ev.date, ev.standShort, ev.shopLocation || ev.city].filter(Boolean).join(" ");
 
-  const rows: { label: string; value: React.ReactNode }[] = [
+  const rows: { label: string; value: string; isAlarm?: boolean; alarmItems?: string[] }[] = [
     { label: "ID eventu", value: ev.id },
     { label: "Data realizacji", value: ev.date },
     { label: "Rodzaj eventu", value: ev.standShort || "—" },
     { label: "Sklep / lokalizacja", value: ev.shopNumber ? `${ev.shopNumber} — ${ev.shopLocation}` : (ev.shopLocation || "—") },
     { label: "Nazwa eventu / katalog", value: eventName },
     { label: "Miejscowość i dokładny adres", value: [ev.city, ev.address].filter(Boolean).join(", ") || "—" },
-    { label: "Telefony do sklepu", value: <Val v={ev.shopPhones} /> },
+    { label: "Telefony do sklepu", value: ev.shopPhones?.join(", ") || "—" },
     { label: "Opis lokalizacji", value: ev.locationDescription || "—" },
     { label: "Opis eventu", value: ev.eventDescription || "—" },
     { label: "Czas trwania eventu", value: ev.dateFrom && ev.dateTo ? `${ev.dateFrom} — ${ev.dateTo}` : "—" },
-    { label: "Marki", value: <Val v={ev.brands} /> },
-    { label: "Testery do zabrania", value: <Val v={ev.testers} /> },
-    { label: "Brakujące testery", value: <AlarmVal items={ev.missingTesters} label="testery" /> },
-    { label: "Kontenty marek", value: <Val v={ev.brandContents} /> },
-    { label: "Brakujące kontenty", value: <AlarmVal items={ev.missingContents} label="kontenty" /> },
+    { label: "Marki", value: ev.brands?.join(", ") || "—" },
+    { label: "Testery do zabrania", value: ev.testers?.join(", ") || "—" },
+    { label: "Brakujące testery", value: ev.missingTesters?.join(", ") || "", isAlarm: true, alarmItems: ev.missingTesters },
+    { label: "Kontenty marek", value: ev.brandContents?.join(", ") || "—" },
+    { label: "Brakujące kontenty", value: ev.missingContents?.join(", ") || "", isAlarm: true, alarmItems: ev.missingContents },
     { label: "Godz. startu — RAMPA", value: ev.startTimeRamp || "—" },
     { label: "Godz. startu — SKLEP", value: ev.startTimeShop || "—" },
-    { label: "Samochody, przyczepy", value: <Val v={ev.vehicles} /> },
+    { label: "Samochody, przyczepy", value: ev.vehicles?.join(", ") || "—" },
     { label: "Czas nieobecności samochodów", value: ev.vehicleAbsenceFrom && ev.vehicleAbsenceTo ? `${ev.vehicleAbsenceFrom} → ${ev.vehicleAbsenceTo}` : "—" },
     { label: "Długość całej trasy", value: ev.routeLength || "—" },
     { label: "Czy rozładowujemy samochód", value: ev.unloadType || "—" },
-    { label: "Ekipa", value: <Val v={ev.crew} /> },
-    { label: "Foty", value: <Val v={ev.photos} /> },
-    { label: "Foto-stoisko", value: <Val v={ev.boothPhotos} /> },
-    { label: "Foty tankowanie", value: <Val v={ev.fuelPhotos} /> },
+    { label: "Ekipa", value: ev.crew?.join(", ") || "—" },
+    { label: "Foty", value: ev.photos?.join(", ") || "—" },
+    { label: "Foto-stoisko", value: ev.boothPhotos?.join(", ") || "—" },
+    { label: "Foty tankowanie", value: ev.fuelPhotos?.join(", ") || "—" },
     { label: "Szpilka do rampy", value: ev.rampPin || "—" },
     { label: "Pogoda na trasie", value: ev.weatherOnRoute || "—" },
-    { label: "PROTOKÓŁ", value: "" },
+    { label: "PROTOKÓŁ", value: "—" },
     { label: "Opis drogi z rampy", value: ev.rampPathDescription || "—" },
     { label: "Uwagi ogólne", value: ev.notes || "—" },
   ];
@@ -113,18 +103,22 @@ export default function EventDetailPage() {
 
       {/* Full data table */}
       <div className="bg-card border border-border rounded-xl overflow-hidden">
-        <Table>
+        <Table className="admin-table">
           <TableBody>
             {rows.map((row, i) => {
               const isSection = row.label === "PROTOKÓŁ";
               return (
                 <TableRow key={i} className={isSection ? "bg-muted/50" : ""}>
-                  <TableCell className="font-medium text-muted-foreground w-[240px] whitespace-nowrap text-sm py-2.5 px-4">
-                    {row.label}
-                  </TableCell>
-                  <TableCell className="text-sm py-2.5 px-4">
-                    {isSection ? <span className="font-semibold text-foreground">—</span> : row.value}
-                  </TableCell>
+                  <EditableCell
+                    value={row.label}
+                    className="font-medium text-muted-foreground w-[240px] whitespace-nowrap text-sm py-2.5 px-4"
+                  />
+                  <EditableCell
+                    value={isSection ? "—" : row.value}
+                    className="text-sm py-2.5 px-4"
+                  >
+                    {row.isAlarm ? <AlarmVal items={row.alarmItems || []} /> : undefined}
+                  </EditableCell>
                 </TableRow>
               );
             })}

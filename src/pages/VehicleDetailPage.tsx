@@ -4,7 +4,8 @@ import { mockVehicles } from "@/data/mock-data";
 import { mockEvents } from "@/data/mock-events";
 import { ArrowLeft, Truck as TruckIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { EditableCell } from "@/components/EditableCell";
 
 const statusColor: Record<string, string> = {
   "dostępny": "bg-emerald-500/20 text-emerald-400",
@@ -64,7 +65,7 @@ export default function VehicleDetailPage() {
       <div>
         <h2 className="text-lg font-semibold mb-3">Dane pojazdu</h2>
         <div className="bg-card border border-border rounded-xl overflow-hidden">
-          <Table>
+          <Table className="admin-table">
             <TableHeader>
               <TableRow>
                 {infoRows.map((r) => (
@@ -75,7 +76,7 @@ export default function VehicleDetailPage() {
             <TableBody>
               <TableRow>
                 {infoRows.map((r) => (
-                  <TableCell key={r.label}>{r.value || "—"}</TableCell>
+                  <EditableCell key={r.label} value={r.value || "—"} />
                 ))}
               </TableRow>
             </TableBody>
@@ -88,7 +89,7 @@ export default function VehicleDetailPage() {
         <h2 className="text-lg font-semibold mb-3">Historia wyjazdów ({vehicleEvents.length})</h2>
         {vehicleEvents.length > 0 ? (
           <div className="bg-card border border-border rounded-xl overflow-hidden">
-            <Table>
+            <Table className="admin-table">
               <TableHeader>
                 <TableRow>
                   <TableHead>LP</TableHead>
@@ -104,14 +105,14 @@ export default function VehicleDetailPage() {
               <TableBody>
                 {vehicleEvents.map((ev, idx) => (
                   <TableRow key={ev.id} className="cursor-pointer hover:bg-accent/30" onClick={() => navigate(`/events/${ev.id}`)}>
-                    <TableCell>{idx + 1}</TableCell>
-                    <TableCell className="font-medium">{ev.eventName || `${ev.date} ${ev.standShort} ${ev.city}`}</TableCell>
-                    <TableCell>{ev.shopLocation || ev.city || "—"}</TableCell>
-                    <TableCell>{ev.routeLength || "—"}</TableCell>
-                    <TableCell className="text-muted-foreground">{ev.crew.length ? ev.crew.join(", ") : "—"}</TableCell>
-                    <TableCell>{ev.photos.length ? ev.photos.join(", ") : "—"}</TableCell>
-                    <TableCell>{ev.fuelPhotos.length ? ev.fuelPhotos.join(", ") : "—"}</TableCell>
-                    <TableCell>{ev.notes || "—"}</TableCell>
+                    <EditableCell value={String(idx + 1)} />
+                    <EditableCell value={ev.eventName || `${ev.date} ${ev.standShort} ${ev.city}`} className="font-medium" />
+                    <EditableCell value={ev.shopLocation || ev.city || "—"} />
+                    <EditableCell value={ev.routeLength || "—"} />
+                    <EditableCell value={ev.crew.length ? ev.crew.join(", ") : "—"} className="text-muted-foreground" />
+                    <EditableCell value={ev.photos.length ? ev.photos.join(", ") : "—"} />
+                    <EditableCell value={ev.fuelPhotos.length ? ev.fuelPhotos.join(", ") : "—"} />
+                    <EditableCell value={ev.notes || "—"} />
                   </TableRow>
                 ))}
               </TableBody>
