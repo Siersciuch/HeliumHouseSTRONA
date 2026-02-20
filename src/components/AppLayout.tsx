@@ -1,13 +1,14 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
-  LayoutDashboard,
-  FileText,
   Calendar,
   Users,
   Truck,
   FlaskConical,
-  Store,
+  Tent,
+  ShoppingBag,
+  Image,
+  ClipboardList,
   BookOpen,
   CalendarClock,
   LogOut,
@@ -45,10 +46,10 @@ const navItems: NavItem[] = [
   { title: "Ekipa", url: "/people", icon: Users },
   { title: "Flota", url: "/fleet", icon: Truck },
   { title: "Testery", url: "/testers", icon: FlaskConical },
-  { title: "Stoiska", url: "/stands", icon: Store },
-  { title: "Sklepy", url: "/shops", icon: Store },
-  { title: "Kontenty", url: "/content", icon: FileText },
-  { title: "Protokoły", url: "/protocols", icon: FileText },
+  { title: "Stoiska", url: "/stands", icon: Tent },
+  { title: "Sklepy", url: "/shops", icon: ShoppingBag },
+  { title: "Kontenty", url: "/content", icon: Image },
+  { title: "Protokoły", url: "/protocols", icon: ClipboardList },
   { title: "Baza Wiedzy", url: "/knowledge", icon: BookOpen },
   { title: "Grafik", url: "/schedule", icon: CalendarClock, adminOnly: true },
 ];
@@ -77,7 +78,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
 
   return (
     <TooltipProvider delayDuration={300}>
-      <div className="flex min-h-screen w-full bg-background relative">
+      <div className="flex min-h-screen w-full bg-background/80 relative">
         <OilSlickBackground />
         {/* Mobile overlay */}
         <AnimatePresence>
@@ -103,7 +104,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
               className={`
                 ${isMobile ? "fixed z-50" : "sticky top-0 self-start"}
                 flex flex-col h-screen
-                bg-sidebar border-r border-sidebar-border
+                bg-sidebar/90 backdrop-blur-md border-r border-sidebar-border
                 ${expanded ? "items-stretch" : "items-center"}
               `}
             >
@@ -134,7 +135,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
                         activeClassName="bg-sidebar-accent text-sidebar-primary shadow-sm"
                         onClick={closeSidebarOnMobile}
                       >
-                        <item.icon className="h-5 w-5 shrink-0" />
+                        <item.icon className="h-6 w-6 shrink-0" />
                         {expanded && <span className="text-sm truncate">{item.title}</span>}
                       </NavLink>
                     </TooltipTrigger>
