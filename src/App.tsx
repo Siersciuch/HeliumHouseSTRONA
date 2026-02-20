@@ -8,7 +8,14 @@ import { ThemeProvider } from "@/contexts/ThemeContext";
 import AppLayout from "@/components/AppLayout";
 import LoginPage from "@/pages/LoginPage";
 import Index from "@/pages/Index";
-import { EventsPage, PeoplePage, FleetPage, TestersPage, StandsPage, KnowledgePage, SchedulePage, ContentPage } from "@/pages/PlaceholderPages";
+import EventsPage from "@/pages/EventsPage";
+import PeoplePage from "@/pages/PeoplePage";
+import FleetPage from "@/pages/FleetPage";
+import TestersPage from "@/pages/TestersPage";
+import StandsPage from "@/pages/StandsPage";
+import ContentPage from "@/pages/ContentPage";
+import KnowledgePage from "@/pages/KnowledgePage";
+import SchedulePage from "@/pages/SchedulePage";
 import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient();
