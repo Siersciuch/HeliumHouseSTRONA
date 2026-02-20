@@ -21,8 +21,12 @@ function getTileSize(date: Date): TileSize {
 
 function getTileBgClass(date: Date): string {
   if (isYesterday(date)) return "border-muted-foreground/20 bg-muted/60";
-  if (isToday(date)) return "border-success/50 bg-success/10";
-  if (isTomorrow(date) || isDayAfterTomorrow(date)) return "border-warning/40 bg-warning/10";
+  if (isToday(date)) return "border-emerald-500/50 bg-emerald-500/15";
+  if (isTomorrow(date) || isDayAfterTomorrow(date)) return "border-orange-400/50 bg-orange-400/12";
+  // Future days
+  const today = new Date();
+  if (date > today) return "border-sky-400/30 bg-sky-400/8";
+  // Past days
   return "border-border/40 bg-card/50";
 }
 
