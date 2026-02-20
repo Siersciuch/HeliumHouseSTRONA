@@ -124,16 +124,15 @@ function EventDetailPanel({ event, onClose }: EventDetailPanelProps) {
   if (!event) {
     return (
       <div className="space-y-3">
-        <Button
-          className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-bold text-base py-6"
+          <Button
+          className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-bold text-sm py-5"
           onClick={() => navigate("/warehouse-work")}
         >
           <Warehouse className="h-5 w-5 mr-2" />
           Rozpocznij pracę na magazynie
         </Button>
         <Button
-          variant="outline"
-          className="w-full font-medium"
+          className="w-full font-medium gradient-petrol text-white hover:opacity-90"
           onClick={() => navigate("/protocols")}
         >
           <FileText className="h-5 w-5 mr-2" />
