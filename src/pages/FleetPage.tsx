@@ -11,13 +11,15 @@ const statusColor: Record<string, string> = {
 const typeLabel: Record<string, string> = {
   bus: "Bus",
   przyczepa: "Przyczepa",
+  autobus: "Autobus",
+  "samochód": "Samochód",
 };
 
 export default function FleetPage() {
   return (
     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
       <h1 className="text-2xl font-bold">Flota</h1>
-      <div className="grid gap-3 sm:grid-cols-2">
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {mockVehicles.map((v) => (
           <div key={v.id} className="bg-card border border-border rounded-xl p-5 space-y-3">
             <div className="flex items-center justify-between">
@@ -25,7 +27,7 @@ export default function FleetPage() {
                 <TruckIcon className="h-6 w-6 text-foreground" />
                 <div>
                   <p className="font-semibold text-foreground">{v.name}</p>
-                  <p className="text-sm text-muted-foreground">{v.plate} · {typeLabel[v.type]}</p>
+                  <p className="text-sm text-muted-foreground">{typeLabel[v.type]}{v.plate ? ` · ${v.plate}` : ""}</p>
                 </div>
               </div>
               <span className={`text-xs font-medium px-2.5 py-1 rounded-full ${statusColor[v.status]}`}>
