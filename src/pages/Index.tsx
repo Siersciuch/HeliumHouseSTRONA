@@ -20,14 +20,12 @@ function getTileSize(date: Date): TileSize {
 }
 
 function getTileBgClass(date: Date): string {
-  if (isYesterday(date)) return "border-muted-foreground/20 bg-muted/60";
-  if (isToday(date)) return "border-emerald-500/50 bg-emerald-500/15";
-  if (isTomorrow(date) || isDayAfterTomorrow(date)) return "border-orange-400/50 bg-orange-400/12";
-  // Future days
+  if (isYesterday(date)) return "border-muted-foreground/30 bg-muted/70";
+  if (isToday(date)) return "border-emerald-500/60 bg-emerald-500/30";
+  if (isTomorrow(date) || isDayAfterTomorrow(date)) return "border-orange-400/60 bg-orange-400/25";
   const today = new Date();
-  if (date > today) return "border-sky-400/30 bg-sky-400/8";
-  // Past days
-  return "border-border/40 bg-card/50";
+  if (date > today) return "border-sky-400/40 bg-sky-400/20";
+  return "border-border/40 bg-muted/50";
 }
 
 function getStatusColor(status: EventTrip["status"]): string {
@@ -74,25 +72,25 @@ function DayTile({ date, size, events, onSelectEvent }: DayTileProps) {
   const monthName = format(date, "LLLL", { locale: pl });
   const dayName = DAYS_PL[getDay(date)];
 
-  const minH = size === "large" ? "min-h-[120px]" : "min-h-[52px]";
-  const padding = size === "large" ? "p-4" : "p-2.5 px-3";
+  const minH = size === "large" ? "min-h-[120px]" : "min-h-[72px]";
+  const padding = size === "large" ? "p-4" : "p-3";
 
   return (
     <div className={`rounded-xl border ${bgClass} ${minH} ${padding} transition-all`}>
-      <div className="flex items-baseline gap-3 mb-1.5">
-        <span className={`font-bold ${size === "large" ? "text-2xl" : "text-base"}`}>
+      <div className="flex items-baseline gap-3 mb-2">
+        <span className={`font-bold ${size === "large" ? "text-2xl" : "text-xl"}`}>
           {dayNum}
         </span>
-        <span className={`text-muted-foreground ${size === "large" ? "text-sm" : "text-xs"}`}>{monthName}</span>
-        <span className="text-xs text-muted-foreground/60">{dayName}</span>
+        <span className={`${size === "large" ? "text-base" : "text-sm"} text-foreground/70`}>{monthName}</span>
+        <span className={`${size === "large" ? "text-sm" : "text-sm"} text-foreground/50`}>{dayName}</span>
         {isToday(date) && (
-          <span className="text-[10px] font-semibold bg-success/20 text-success rounded-full px-2 py-0.5">DZIŚ</span>
+          <span className="text-[10px] font-semibold bg-emerald-600/30 text-emerald-300 rounded-full px-2 py-0.5">DZIŚ</span>
         )}
         {isTomorrow(date) && (
-          <span className="text-[10px] font-semibold bg-warning/20 text-warning rounded-full px-2 py-0.5">JUTRO</span>
+          <span className="text-[10px] font-semibold bg-orange-500/30 text-orange-300 rounded-full px-2 py-0.5">JUTRO</span>
         )}
         {isDayAfterTomorrow(date) && (
-          <span className="text-[10px] font-semibold bg-warning/20 text-warning rounded-full px-2 py-0.5">POJUTRZE</span>
+          <span className="text-[10px] font-semibold bg-orange-500/30 text-orange-300 rounded-full px-2 py-0.5">POJUTRZE</span>
         )}
       </div>
 
@@ -103,7 +101,7 @@ function DayTile({ date, size, events, onSelectEvent }: DayTileProps) {
           ))}
         </div>
       ) : (
-        size === "large" && <p className="text-xs text-muted-foreground/40 italic">Brak wyjazdów</p>
+        <div className="h-[28px]" /> 
       )}
     </div>
   );
@@ -197,10 +195,10 @@ export default function DashboardPage() {
     return result;
   }, []);
 
-  // Scroll to today on mount
+  // Scroll so today is near the bottom of visible area
   useEffect(() => {
     if (todayRef.current) {
-      todayRef.current.scrollIntoView({ block: "center" });
+      todayRef.current.scrollIntoView({ block: "end" });
     }
   }, []);
 
