@@ -1,55 +1,66 @@
 
 
-## Dynamic Iridescent Background -- "Oil Slick / Crow Feather" Effect
+## Fix: Make Oil Slick Background Visible + Full Visual Overhaul
 
-### Concept
-A full-page animated background simulating gasoline iridescence on a dark puddle -- dark base with slowly shifting, morphing blobs of petrol-blue, emerald-green, and deep purple that drift and blend organically. Like the shimmer on crow feathers or oil on wet asphalt.
+### Root Cause
+The oil slick background component exists and animations are defined, but the main layout wrapper has `bg-background` (a solid opaque color) that completely covers it. The sidebar has `bg-sidebar` (also opaque). The background is rendering behind these opaque layers and is invisible.
 
-### Technical Approach
+### Fix Strategy
+Make the main content area and sidebar semi-transparent so the oil slick shines through, while keeping readability. Also implement the remaining visual improvements from the previous plan.
 
-**New component: `src/components/OilSlickBackground.tsx`**
+---
 
-A dedicated React component using pure CSS animations (no canvas/WebGL for performance). The technique:
-- A fixed full-screen `div` behind all content (`z-index: 0`, `position: fixed`)
-- Multiple overlapping radial gradients with petrol/emerald/purple colors at low opacity (~15-25%)
-- Each gradient blob animated independently via `@keyframes` that shift `background-position`, `scale`, and `opacity` over long durations (20-40 seconds) creating a slow, organic drift
-- CSS `mix-blend-mode: screen` to create the iridescent color-mixing effect
-- Dark base (`hsl(225, 25%, 6%)`) ensures colors appear as subtle sheens, not bright splashes
-- Uses `filter: blur(80px)` on the blobs for that soft, diffused oil-on-water look
+### Changes
 
-**Structure (3-4 animated layers):**
-```text
-Layer 0: Solid dark background (near-black)
-Layer 1: Large petrol-blue blob, drifting slowly (30s cycle)
-Layer 2: Emerald-green blob, different trajectory (25s cycle)
-Layer 3: Deep purple/magenta blob, slowest drift (40s cycle)
-```
+**1. AppLayout.tsx -- Make layers translucent (dark mode)**
 
-Each layer is a `div` with a large radial gradient, absolutely positioned, animated with different `@keyframes` for position and scale. The blur and blend mode create the realistic oil-slick shimmer.
+- Main wrapper: change `bg-background` to `bg-background/80` or use `bg-transparent` in dark mode
+- Sidebar: change `bg-sidebar` to `bg-sidebar/90 backdrop-blur-md` so the oil slick subtly shows through with a frosted glass effect
+- Mobile header: add `backdrop-blur` and semi-transparent background
+- Main content area: make background semi-transparent in dark mode
 
-### Files to Create/Edit
+**2. AppLayout.tsx -- Unique sidebar icons**
 
-| File | Action | Description |
-|------|--------|-------------|
-| `src/components/OilSlickBackground.tsx` | **Create** | New component with 3-4 animated gradient blobs |
-| `src/index.css` | **Edit** | Add `@keyframes` for blob drift animations (3 sets) |
-| `src/components/AppLayout.tsx` | **Edit** | Insert `<OilSlickBackground />` as first child inside the main wrapper, behind sidebar and content |
+Replace duplicate icons:
+- Stoiska: `Tent` instead of `Store`
+- Sklepy: `ShoppingBag` instead of `Store`
+- Kontenty: `Image` instead of `FileText`
+- Protokoly: `ClipboardList` instead of `FileText`
+- Increase icon size from `h-5 w-5` to `h-6 w-6`
 
-### CSS Keyframes (added to `src/index.css`)
+**3. AppLayout.tsx -- Sidebar hover effects**
 
-Three keyframe sets for organic movement:
-- `oil-drift-1`: Moves blob diagonally, scales up/down (30s, infinite)
-- `oil-drift-2`: Circular path, counter-direction (25s, infinite)
-- `oil-drift-3`: Slow vertical drift with scale pulse (40s, infinite)
+- Add glow/scale micro-animation on nav item hover
+- Active item gets a gradient left border accent
 
-### Integration in AppLayout
+**4. Index.tsx -- Button fixes**
 
-The background component renders as a fixed full-screen layer at `z-index: 0`. The sidebar gets `z-index: 1` (or higher via existing sticky/fixed positioning). Main content stays above naturally. The background is only active in dark mode; in light mode it either hides or switches to a subtle pearl shimmer.
+- "Rozpocznij prace na magazynie": reduce font to `text-xs` or `text-sm`
+- "Generuj protokol": add gradient background styling
 
-### Performance Considerations
-- Pure CSS animations (GPU-accelerated via `transform` and `opacity`)
-- No JavaScript animation loops, no canvas, no requestAnimationFrame
-- `will-change: transform` on animated layers
-- `pointer-events: none` so it never interferes with clicks
-- Minimal DOM: only 4 extra divs total
+**5. index.css -- Global visual enhancements**
+
+- Add nav item glow hover utility class
+- Enhanced table header gradient styling
+- Row hover glow effect for tables
+- Smooth global transitions on interactive elements
+
+**6. table.tsx -- Premium table headers**
+
+- Gradient background on `TableHead`
+- Uppercase, letter-spacing, centered text
+- Enhanced row hover with visible highlight
+
+---
+
+### Technical Details
+
+| File | Changes |
+|------|---------|
+| `src/components/AppLayout.tsx` | Transparent backgrounds, unique icons, hover effects, larger icons |
+| `src/pages/Index.tsx` | Button font fix, protocol button styling |
+| `src/index.css` | Nav glow class, table styling, global transitions |
+| `src/components/ui/table.tsx` | Premium header gradient, row hover enhancement |
+
+The key fix is making the layout layers semi-transparent so the animated oil slick background becomes visible beneath the UI.
 
