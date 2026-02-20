@@ -228,18 +228,20 @@ export default function AppLayout({ children }: AppLayoutProps) {
 
         {/* Main content */}
         <div className="flex-1 flex flex-col min-h-screen min-w-0">
-          {/* Top bar */}
+        {/* Top bar - only show on mobile when sidebar is hidden */}
+        {isMobile && !sidebarOpen && (
           <header className="h-14 flex items-center gap-3 px-4 border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-30">
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => setSidebarOpen(!sidebarOpen)}
+              onClick={() => setSidebarOpen(true)}
               className="shrink-0"
             >
               <Menu className="h-5 w-5" />
             </Button>
             <div className="flex-1" />
           </header>
+        )}
 
           {/* Impersonation banner */}
           {isImpersonating && (

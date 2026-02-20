@@ -3,7 +3,9 @@ import { addDays, format, isToday, isTomorrow, isYesterday, getDay, startOfYear,
 import { pl } from "date-fns/locale";
 import { motion } from "framer-motion";
 import { getEventsByDate, type EventTrip } from "@/data/mock-events";
-import { ArrowRight, Truck as TruckIcon } from "lucide-react";
+import { Truck as TruckIcon, Play, FileText, Warehouse } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 import busImage from "@/assets/bus.png";
 
 const DAYS_SHORT = ["Ndz", "Pon", "Wt", "Śr", "Czw", "Pt", "Sob"];
@@ -30,15 +32,6 @@ function getTileBgClass(date: Date): string {
   return "border-border/40 bg-muted/50";
 }
 
-function getStatusColor(status: EventTrip["status"]): string {
-  switch (status) {
-    case "completed": return "bg-success/20 text-success";
-    case "in-progress": return "bg-warning/20 text-warning";
-    case "cancelled": return "bg-destructive/20 text-destructive";
-    default: return "bg-primary/15 text-primary";
-  }
-}
-
 interface BusChipProps {
   event: EventTrip;
   onClick?: () => void;
@@ -51,14 +44,11 @@ function BusChip({ event, onClick }: BusChipProps) {
       className="relative hover:scale-105 hover:shadow-glow transition-all group"
       style={{ width: 240, height: 104 }}
     >
-      {/* Bus image */}
       <img src={busImage} alt="Bus" className="w-full h-full object-contain" />
-      {/* Text overlay on the bus body */}
       <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none" style={{ paddingBottom: 6 }}>
         <span className="text-base font-bold leading-tight text-gray-800 drop-shadow-sm">{event.standShort}</span>
         <span className="text-sm leading-tight text-gray-600 drop-shadow-sm">{event.city}</span>
       </div>
-      {/* Trailer badge */}
       {event.hasTrailer && (
         <span className="absolute -top-1.5 -right-1.5 text-xs font-bold bg-primary text-primary-foreground rounded px-1.5 py-0.5 shadow">+P</span>
       )}
@@ -113,10 +103,29 @@ interface EventDetailPanelProps {
 }
 
 function EventDetailPanel({ event, onClose }: EventDetailPanelProps) {
+  const navigate = useNavigate();
+
   if (!event) {
     return (
-      <div className="flex items-center justify-center h-full text-muted-foreground text-sm">
-        Kliknij na busa, aby zobaczyć szczegóły
+      <div className="space-y-3">
+        <Button
+          className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-bold text-base py-6"
+          onClick={() => navigate("/warehouse-work")}
+        >
+          <Warehouse className="h-5 w-5 mr-2" />
+          Rozpocznij pracę na magazynie
+        </Button>
+        <Button
+          variant="outline"
+          className="w-full font-medium"
+          onClick={() => navigate("/protocols")}
+        >
+          <FileText className="h-5 w-5 mr-2" />
+          Generuj protokół
+        </Button>
+        <div className="flex items-center justify-center flex-1 text-muted-foreground text-sm pt-8">
+          Kliknij na busa, aby zobaczyć szczegóły
+        </div>
       </div>
     );
   }
@@ -133,41 +142,35 @@ function EventDetailPanel({ event, onClose }: EventDetailPanelProps) {
         <button onClick={onClose} className="text-muted-foreground hover:text-foreground text-sm">✕</button>
       </div>
 
-      <div className={`inline-block px-2.5 py-1 rounded-full text-xs font-medium ${getStatusColor(event.status)}`}>
-        {event.status === "planned" ? "Zaplanowany" :
-         event.status === "in-progress" ? "W trakcie" :
-         event.status === "completed" ? "Zakończony" : "Anulowany"}
-      </div>
+      <Button
+        className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-bold text-base py-6"
+        onClick={() => navigate("/trip-started")}
+      >
+        <Play className="h-5 w-5 mr-2" />
+        Rozpocznij przejazd
+      </Button>
 
       <div className="space-y-3 text-sm">
         <div>
-          <p className="text-muted-foreground text-xs uppercase tracking-wider mb-1">Klient</p>
-          <p className="font-medium">{event.client || "—"}</p>
+          <p className="text-muted-foreground text-xs uppercase tracking-wider mb-1">Nazwa eventu</p>
+          <p className="font-medium">{event.eventName || `${event.standShort} ${event.city}`}</p>
         </div>
         <div>
-          <p className="text-muted-foreground text-xs uppercase tracking-wider mb-1">Ekipa</p>
-          <p>{event.crew.length ? event.crew.join(", ") : "—"}</p>
+          <p className="text-muted-foreground text-xs uppercase tracking-wider mb-1">Godziny</p>
+          <p>{event.time || "—"}</p>
         </div>
         <div>
-          <p className="text-muted-foreground text-xs uppercase tracking-wider mb-1">Pojazd</p>
-          <p>{event.vehicle || "—"}</p>
+          <p className="text-muted-foreground text-xs uppercase tracking-wider mb-1">Adres</p>
+          <p>{event.address || "—"}</p>
         </div>
         <div>
-          <p className="text-muted-foreground text-xs uppercase tracking-wider mb-1">Testery</p>
-          <p>{event.testers.length ? event.testers.join(", ") : "—"}</p>
+          <p className="text-muted-foreground text-xs uppercase tracking-wider mb-1">Telefon</p>
+          <p>{event.shopPhones?.length ? event.shopPhones.join(", ") : "—"}</p>
         </div>
-        {event.hasTrailer && (
-          <div className="flex items-center gap-2 text-xs bg-muted/50 rounded-lg px-3 py-2">
-            <TruckIcon className="h-3.5 w-3.5" />
-            <span>Z przyczepą</span>
-          </div>
-        )}
-        {event.notes && (
-          <div>
-            <p className="text-muted-foreground text-xs uppercase tracking-wider mb-1">Uwagi</p>
-            <p className="text-sm">{event.notes}</p>
-          </div>
-        )}
+        <div>
+          <p className="text-muted-foreground text-xs uppercase tracking-wider mb-1">Kod pocztowy / dane</p>
+          <p>{event.locationDescription || "—"}</p>
+        </div>
       </div>
     </motion.div>
   );
@@ -215,7 +218,7 @@ export default function DashboardPage() {
     <div className="flex gap-4 h-[calc(100vh-5rem)]">
       <div
         ref={scrollRef}
-        className="w-3/4 overflow-y-auto pr-2 space-y-1.5"
+        className="flex-1 overflow-y-auto pr-2 space-y-1.5"
         style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
       >
         {days.map(({ date, events }) => (
@@ -230,7 +233,7 @@ export default function DashboardPage() {
         ))}
       </div>
 
-      <div className="w-1/4 bg-card border border-border rounded-xl p-4 overflow-y-auto">
+      <div className="w-64 shrink-0 bg-card border border-border rounded-xl p-4 overflow-y-auto">
         <EventDetailPanel event={selectedEvent} onClose={() => setSelectedEvent(null)} />
       </div>
     </div>

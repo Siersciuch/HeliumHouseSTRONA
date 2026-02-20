@@ -22,6 +22,8 @@ import SchedulePage from "@/pages/SchedulePage";
 import PersonDetailPage from "@/pages/PersonDetailPage";
 import ShopsPage from "@/pages/ShopsPage";
 import ProtocolsPage from "@/pages/ProtocolsPage";
+import TripStartedPage from "@/pages/TripStartedPage";
+import WarehouseWorkPage from "@/pages/WarehouseWorkPage";
 import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -58,6 +60,8 @@ function AppRoutes() {
       <Route path="/protocols" element={<ProtectedRoute><ProtocolsPage /></ProtectedRoute>} />
       <Route path="/knowledge" element={<ProtectedRoute><KnowledgePage /></ProtectedRoute>} />
       <Route path="/schedule" element={<ProtectedRoute><SchedulePage /></ProtectedRoute>} />
+      <Route path="/trip-started" element={<ProtectedRoute><TripStartedPage /></ProtectedRoute>} />
+      <Route path="/warehouse-work" element={<ProtectedRoute><WarehouseWorkPage /></ProtectedRoute>} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
