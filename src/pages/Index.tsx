@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useEffect } from "react";
+import React, { useMemo, useRef, useEffect, useCallback } from "react";
 import { addDays, format, isToday, isTomorrow, isYesterday, getDay, startOfYear, endOfYear, differenceInDays } from "date-fns";
 import { pl } from "date-fns/locale";
 import { motion } from "framer-motion";
@@ -12,10 +12,11 @@ function isDayAfterTomorrow(date: Date): boolean {
   return format(date, "yyyy-MM-dd") === format(dat, "yyyy-MM-dd");
 }
 
-type TileSize = "large" | "small";
+type TileSize = "large" | "medium" | "small";
 
 function getTileSize(date: Date): TileSize {
-  if (isToday(date) || isTomorrow(date) || isDayAfterTomorrow(date)) return "large";
+  if (isToday(date)) return "large";
+  if (isTomorrow(date) || isDayAfterTomorrow(date)) return "medium";
   return "small";
 }
 
@@ -72,17 +73,17 @@ function DayTile({ date, size, events, onSelectEvent }: DayTileProps) {
   const monthName = format(date, "LLLL", { locale: pl });
   const dayName = DAYS_PL[getDay(date)];
 
-  const minH = size === "large" ? "min-h-[120px]" : "min-h-[72px]";
-  const padding = size === "large" ? "p-4" : "p-3";
+  const minH = size === "large" ? "min-h-[156px]" : size === "medium" ? "min-h-[120px]" : "min-h-[72px]";
+  const padding = size === "large" ? "p-5" : size === "medium" ? "p-4" : "p-3";
 
   return (
     <div className={`rounded-xl border ${bgClass} ${minH} ${padding} transition-all`}>
       <div className="flex items-baseline gap-3 mb-2">
-        <span className={`font-bold ${size === "large" ? "text-2xl" : "text-xl"}`}>
+        <span className={`font-bold ${size === "large" ? "text-3xl" : size === "medium" ? "text-2xl" : "text-xl"}`}>
           {dayNum}
         </span>
-        <span className={`${size === "large" ? "text-base" : "text-sm"} text-foreground/70`}>{monthName}</span>
-        <span className={`${size === "large" ? "text-sm" : "text-sm"} text-foreground/50`}>{dayName}</span>
+        <span className={`${size === "large" ? "text-lg" : size === "medium" ? "text-base" : "text-sm"} text-foreground/70`}>{monthName}</span>
+        <span className={`${size === "large" ? "text-base" : size === "medium" ? "text-sm" : "text-sm"} text-foreground/50`}>{dayName}</span>
         {isToday(date) && (
           <span className="text-[10px] font-semibold bg-emerald-600/30 text-emerald-300 rounded-full px-2 py-0.5">DZIŚ</span>
         )}
@@ -176,9 +177,8 @@ function EventDetailPanel({ event, onClose }: EventDetailPanelProps) {
 export default function DashboardPage() {
   const [selectedEvent, setSelectedEvent] = React.useState<EventTrip | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
-  const todayRef = useRef<HTMLDivElement>(null);
+  const yesterdayRef = useRef<HTMLDivElement>(null);
 
-  // Full year: Jan 1 on top → Dec 31 on bottom
   const days = useMemo(() => {
     const now = new Date();
     const yearStart = startOfYear(now);
@@ -186,7 +186,6 @@ export default function DashboardPage() {
     const totalDays = differenceInDays(yearEnd, yearStart) + 1;
 
     const result: { date: Date; events: EventTrip[] }[] = [];
-    // Future on top, past on bottom
     for (let i = totalDays - 1; i >= 0; i--) {
       const d = addDays(yearStart, i);
       const dateStr = format(d, "yyyy-MM-dd");
@@ -195,12 +194,23 @@ export default function DashboardPage() {
     return result;
   }, []);
 
-  // Scroll so today is near the bottom of visible area
-  useEffect(() => {
-    if (todayRef.current) {
-      todayRef.current.scrollIntoView({ block: "end" });
+  const scrollToHome = useCallback(() => {
+    if (yesterdayRef.current) {
+      yesterdayRef.current.scrollIntoView({ block: "end", behavior: "smooth" });
     }
   }, []);
+
+  useEffect(() => {
+    if (yesterdayRef.current) {
+      yesterdayRef.current.scrollIntoView({ block: "end" });
+    }
+  }, []);
+
+  useEffect(() => {
+    const handler = () => scrollToHome();
+    window.addEventListener("scroll-to-today", handler);
+    return () => window.removeEventListener("scroll-to-today", handler);
+  }, [scrollToHome]);
 
   return (
     <div className="flex gap-4 h-[calc(100vh-5rem)]">
@@ -212,7 +222,7 @@ export default function DashboardPage() {
       >
         <h1 className="text-xl font-bold sticky top-0 bg-background/80 backdrop-blur-sm py-2 z-10">Kalendarz</h1>
         {days.map(({ date, events }) => (
-          <div key={format(date, "yyyy-MM-dd")} ref={isToday(date) ? todayRef : undefined}>
+          <div key={format(date, "yyyy-MM-dd")} ref={isYesterday(date) ? yesterdayRef : undefined}>
             <DayTile
               date={date}
               size={getTileSize(date)}
