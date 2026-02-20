@@ -14,7 +14,7 @@ export default function StandsPage() {
           <button
             key={s.id}
             onClick={() => navigate(`/stands/${s.id}`)}
-            className="bg-card border border-border rounded-xl p-5 space-y-3 text-left hover:border-primary/40 hover:bg-accent/30 transition-colors group"
+            className="bg-card border border-border rounded-xl p-5 space-y-3 text-left hover-levitate hover:border-primary/40 group"
           >
             {/* Thumbnail placeholder */}
             <div className="w-full aspect-[16/9] rounded-lg bg-muted/60 flex items-center justify-center overflow-hidden">

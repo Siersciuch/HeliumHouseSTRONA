@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
+  LayoutDashboard,
   Calendar,
   Users,
   Truck,
@@ -26,7 +27,7 @@ import { Button } from "@/components/ui/button";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { motion, AnimatePresence } from "framer-motion";
 import logoHH from "@/assets/logoHH.jpg";
-import OilSlickBackground from "@/components/OilSlickBackground";
+import SpaceBackground from "@/components/SpaceBackground";
 import {
   Tooltip,
   TooltipContent,
@@ -42,6 +43,7 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
+  { title: "Dashboard", url: "/", icon: LayoutDashboard },
   { title: "Eventy", url: "/events", icon: Calendar },
   { title: "Ekipa", url: "/people", icon: Users },
   { title: "Flota", url: "/fleet", icon: Truck },
@@ -79,7 +81,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
   return (
     <TooltipProvider delayDuration={300}>
       <div className="flex min-h-screen w-full bg-background/80 relative">
-        <OilSlickBackground />
+        <SpaceBackground />
         {/* Mobile overlay */}
         <AnimatePresence>
           {isMobile && sidebarOpen && (
@@ -131,11 +133,11 @@ export default function AppLayout({ children }: AppLayoutProps) {
                       <NavLink
                         to={item.url}
                         end={item.url === "/"}
-                        className={`flex items-center ${expanded ? "gap-3 px-3" : "justify-center"} w-full h-10 rounded-lg text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground transition-colors`}
-                        activeClassName="bg-sidebar-accent text-sidebar-primary shadow-sm"
+                        className={`group flex items-center ${expanded ? "gap-3 px-3" : "justify-center"} w-full h-10 rounded-lg text-sidebar-foreground/70 hover:bg-primary/10 hover:text-sidebar-foreground hover:-translate-y-[2px] hover:shadow-lg hover:shadow-primary/20 transition-all duration-200`}
+                        activeClassName="bg-primary/15 text-sidebar-primary shadow-glow border-l-[3px] border-primary"
                         onClick={closeSidebarOnMobile}
                       >
-                        <item.icon className="h-6 w-6 shrink-0" />
+                        <item.icon className="h-6 w-6 shrink-0 transition-transform duration-200 group-hover:rotate-[5deg] group-hover:scale-110" />
                         {expanded && <span className="text-sm truncate">{item.title}</span>}
                       </NavLink>
                     </TooltipTrigger>
