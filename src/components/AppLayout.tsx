@@ -41,7 +41,7 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   { title: "Eventy", url: "/events", icon: Calendar },
-  { title: "Ludzie", url: "/people", icon: Users },
+  { title: "Ekipa", url: "/people", icon: Users },
   { title: "Flota", url: "/fleet", icon: Truck },
   { title: "Testery", url: "/testers", icon: FlaskConical },
   { title: "Stoiska", url: "/stands", icon: Store },

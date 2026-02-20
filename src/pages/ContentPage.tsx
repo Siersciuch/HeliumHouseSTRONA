@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { mockBrandContent } from "@/data/mock-data";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Check, X } from "lucide-react";
+import { Download } from "lucide-react";
 
 export default function ContentPage() {
   return (
@@ -25,18 +25,22 @@ export default function ContentPage() {
                 <TableCell className="text-muted-foreground">{i + 1}</TableCell>
                 <TableCell className="font-medium">{c.brand}</TableCell>
                 <TableCell className="text-center">
-                  {c.hasVertical
-                    ? <Check className="h-4 w-4 text-emerald-400 mx-auto" />
-                    : <X className="h-4 w-4 text-destructive mx-auto" />
-                  }
+                  {c.hasVertical ? (
+                    <a href="#" className="inline-flex items-center gap-1 text-xs text-primary hover:underline">
+                      <Download className="h-3.5 w-3.5" /> Pobierz
+                    </a>
+                  ) : null}
                 </TableCell>
                 <TableCell className="text-center">
-                  {c.hasHorizontal
-                    ? <Check className="h-4 w-4 text-emerald-400 mx-auto" />
-                    : <X className="h-4 w-4 text-destructive mx-auto" />
-                  }
+                  {c.hasHorizontal ? (
+                    <a href="#" className="inline-flex items-center gap-1 text-xs text-primary hover:underline">
+                      <Download className="h-3.5 w-3.5" /> Pobierz
+                    </a>
+                  ) : null}
                 </TableCell>
-                <TableCell className="text-muted-foreground text-sm">{c.notes || "—"}</TableCell>
+                <TableCell className="text-muted-foreground text-sm">
+                  {!c.hasVertical && !c.hasHorizontal ? "brak" : !c.hasVertical ? "brak pionu" : !c.hasHorizontal ? "brak poziomu" : c.notes || "—"}
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
