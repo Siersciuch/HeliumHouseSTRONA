@@ -16,13 +16,13 @@ export default function PeoplePage() {
               <TableRow>
                 <TableHead>Imię</TableHead>
                 <TableHead>Nazwisko</TableHead>
-                <TableHead>Email</TableHead>
                 <TableHead>Telefon</TableHead>
-                <TableHead>Miasto</TableHead>
+                <TableHead>Email</TableHead>
+                <TableHead className="text-center">Klucze mag.</TableHead>
                 <TableHead>Prawo jazdy</TableHead>
+                <TableHead>Miasto</TableHead>
                 <TableHead className="text-center">Upr. elektr.</TableHead>
                 <TableHead className="text-center">Upr. wysok.</TableHead>
-                <TableHead className="text-center">Klucze mag.</TableHead>
                 <TableHead className="text-center">2FA</TableHead>
                 <TableHead>Urządzenia</TableHead>
                 <TableHead>Ost. logowania</TableHead>
@@ -40,18 +40,18 @@ export default function PeoplePage() {
                 >
                   <TableCell className="font-medium">{p.firstName}</TableCell>
                   <TableCell className="font-medium">{p.lastName || "—"}</TableCell>
-                  <TableCell className="text-muted-foreground text-xs">{p.email || "—"}</TableCell>
                   <TableCell className="text-muted-foreground">{p.phone || "—"}</TableCell>
-                  <TableCell className="text-muted-foreground">{p.city || "—"}</TableCell>
+                  <TableCell className="text-muted-foreground text-xs">{p.email || "—"}</TableCell>
+                  <TableCell className="text-center">
+                    {p.hasKeys ? <Key className="h-4 w-4 text-warning mx-auto" /> : <X className="h-4 w-4 text-muted-foreground/30 mx-auto" />}
+                  </TableCell>
                   <TableCell className="text-muted-foreground">{p.drivingLicense || "—"}</TableCell>
+                  <TableCell className="text-muted-foreground">{p.city || "—"}</TableCell>
                   <TableCell className="text-center">
                     {p.electricalCert ? <Check className="h-4 w-4 text-emerald-400 mx-auto" /> : <X className="h-4 w-4 text-muted-foreground/30 mx-auto" />}
                   </TableCell>
                   <TableCell className="text-center">
                     {p.heightCert ? <Check className="h-4 w-4 text-emerald-400 mx-auto" /> : <X className="h-4 w-4 text-muted-foreground/30 mx-auto" />}
-                  </TableCell>
-                  <TableCell className="text-center">
-                    {p.hasKeys ? <Key className="h-4 w-4 text-warning mx-auto" /> : <X className="h-4 w-4 text-muted-foreground/30 mx-auto" />}
                   </TableCell>
                   <TableCell className="text-center">
                     {p.twoFA ? <Check className="h-4 w-4 text-emerald-400 mx-auto" /> : <X className="h-4 w-4 text-muted-foreground/30 mx-auto" />}
