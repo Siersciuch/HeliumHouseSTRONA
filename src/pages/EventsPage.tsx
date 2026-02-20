@@ -1,6 +1,7 @@
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { mockEvents, type EventTrip } from "@/data/mock-events";
-import { Calendar, MapPin, Users, Truck as TruckIcon } from "lucide-react";
+import { Calendar, Clock, MapPin, Users, Truck as TruckIcon, ChevronRight } from "lucide-react";
 
 function statusLabel(s: EventTrip["status"]) {
   switch (s) {
@@ -21,28 +22,37 @@ function statusClass(s: EventTrip["status"]) {
 }
 
 export default function EventsPage() {
+  const navigate = useNavigate();
+
   return (
     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
       <h1 className="text-2xl font-bold">Eventy</h1>
       <div className="grid gap-3">
         {mockEvents.map((ev) => (
-          <div key={ev.id} className="bg-card border border-border rounded-xl p-4 flex flex-col sm:flex-row sm:items-center gap-3">
+          <button
+            key={ev.id}
+            onClick={() => navigate(`/events/${ev.id}`)}
+            className="bg-card border border-border rounded-xl p-4 flex flex-col sm:flex-row sm:items-center gap-3 text-left hover:border-primary/40 hover:bg-accent/30 transition-colors group w-full"
+          >
             <div className="flex items-center gap-3 flex-1 min-w-0">
               <TruckIcon className="h-5 w-5 text-foreground shrink-0" />
               <div className="min-w-0">
-                <p className="font-semibold text-foreground">{ev.standShort} — {ev.city}</p>
+                <p className="font-semibold text-foreground">{ev.date} — {ev.standShort}</p>
                 <p className="text-sm text-muted-foreground">{ev.client}</p>
               </div>
             </div>
-            <div className="flex items-center gap-4 text-sm text-muted-foreground">
-              <span className="flex items-center gap-1"><Calendar className="h-3.5 w-3.5" />{ev.date}</span>
-              <span className="flex items-center gap-1"><MapPin className="h-3.5 w-3.5" />{ev.city}</span>
-              <span className="flex items-center gap-1"><Users className="h-3.5 w-3.5" />{ev.crew.length}</span>
+            <div className="flex items-center gap-4 text-sm text-muted-foreground flex-wrap">
+              <span className="flex items-center gap-1"><Clock className="h-3.5 w-3.5" />{ev.time}</span>
+              <span className="flex items-center gap-1"><TruckIcon className="h-3.5 w-3.5" />{ev.vehicle.split("(")[0].trim()}</span>
+              <span className="flex items-center gap-1"><Users className="h-3.5 w-3.5" />{ev.crew.join(", ")}</span>
             </div>
-            <span className={`text-xs font-medium px-2.5 py-1 rounded-full whitespace-nowrap ${statusClass(ev.status)}`}>
-              {statusLabel(ev.status)}
-            </span>
-          </div>
+            <div className="flex items-center gap-2">
+              <span className={`text-xs font-medium px-2.5 py-1 rounded-full whitespace-nowrap ${statusClass(ev.status)}`}>
+                {statusLabel(ev.status)}
+              </span>
+              <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-foreground transition-colors" />
+            </div>
+          </button>
         ))}
       </div>
     </motion.div>
