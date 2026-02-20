@@ -1,66 +1,84 @@
 
 
-## Fix: Make Oil Slick Background Visible + Full Visual Overhaul
+## Kosmiczne tlo + efektowne interakcje + Dashboard w menu
 
-### Root Cause
-The oil slick background component exists and animations are defined, but the main layout wrapper has `bg-background` (a solid opaque color) that completely covers it. The sidebar has `bg-sidebar` (also opaque). The background is rendering behind these opaque layers and is invisible.
+### 1. Nowe tlo: Animated Space Background
 
-### Fix Strategy
-Make the main content area and sidebar semi-transparent so the oil slick shines through, while keeping readability. Also implement the remaining visual improvements from the previous plan.
+Zastapienie obecnego `OilSlickBackground` nowym komponentem `SpaceBackground.tsx` -- animowana przestrzen kosmiczna dzialajaca w **obu trybach** (jasnym i ciemnym).
+
+**Elementy:**
+- ~120 malych gwiazdek (biale kropki 1-3px) z losowymi pozycjami, rozlozonych po calym ekranie
+- Kazda gwiazdka ma animacje `twinkle` (pulsowanie opacity) z losowym opoznieniem i czasem trwania (2-8s)
+- Co ~12 sekund przeleci "shooting star" -- cienka linia z gradientem, animowana po przekatnej
+- Tryb jasny: gwiazdki sa jasnoszare/srebrne na jasnym tle, delikatne ale widoczne
+- Tryb ciemny: biale gwiazdki na ciemnym tle, klasyczny kosmos
+- Czyste CSS animacje, GPU-accelerated, `pointer-events: none`
+
+**Nowe keyframes w `index.css`:**
+- `@keyframes twinkle` -- opacity 0.1 do 1.0 i z powrotem
+- `@keyframes shooting-star` -- translateX/Y z fade-in/out
+- Usuniecie starych `oil-drift` keyframes
+
+### 2. Efektowne interakcje hover -- "Unoszenie sie" i "Levitacja"
+
+Na kazdym interaktywnym elemencie (karty, przyciski, wiersze tabel, kafelki nawigacji):
+
+**Efekt "lewitacji" na kartach/kafelkach** (np. StandsPage, FleetPage):
+- Na hover: `translateY(-6px)`, subtelny `box-shadow` z kolorowym glow poniżej (jakby element unosil sie nad powierzchnia)
+- Cien sie rozszerza i staje bardziej rozmyty im wyzej element "wznosi sie"
+- Plynna animacja `transition: transform 0.3s, box-shadow 0.3s`
+
+**Efekt na przyciskach sidebar:**
+- Hover: ikona lekko sie obraca (`rotate(5deg)`) + scale(1.1) + glow pod spodem
+- Active state: silniejszy glow + lewy border accent
+
+**Efekt na wierszach tabel:**
+- Hover: wiersz unosi sie lekko (`translateY(-1px)`) + cien + lewy border accent
+- Selected: mocniejsze podswietlenie z petrol glow
+
+**Nowe klasy CSS w `index.css`:**
+```
+.hover-levitate -- unoszenie z cieniem
+.hover-glow -- poswiatka pod elementem
+.hover-rotate-icon -- lekki obrot ikony
+```
+
+### 3. Dashboard w menu glownym
+
+Dodanie pozycji "Dashboard" na samej gorze listy nawigacji z ikona `LayoutDashboard`.
+
+**Plik:** `src/components/AppLayout.tsx`
+- Import `LayoutDashboard` z lucide-react
+- Nowy wpis na poczatku `navItems`: `{ title: "Dashboard", url: "/", icon: LayoutDashboard }`
+- Ustawienie `end: true` zeby podswietlal sie tylko na dokladnej sciezce `/`
+
+### 4. Poprawa sidebar -- interaktywne przyciski nawigacji
+
+**Plik:** `src/components/AppLayout.tsx`
+
+Kazdy NavLink dostaje klasy efektow:
+- `hover:translate-y-[-2px] hover:shadow-lg hover:shadow-primary/20`
+- Ikona w `group-hover:rotate-[5deg] group-hover:scale-110 transition-transform`
+- Aktywny stan: `border-l-3 border-primary bg-primary/15 shadow-glow`
+
+### 5. Karty na stronach (StandsPage itp.) -- efekt lewitacji
+
+**Plik:** `src/pages/StandsPage.tsx` (i inne strony z kafelkami)
+
+Kazda karta dostaje:
+- `hover:-translate-y-2 hover:shadow-xl hover:shadow-primary/15 transition-all duration-300`
+- Subtelny glow pod karta na hover
+- `active:translate-y-0 active:shadow-md` -- klikniecie "wciska" karte z powrotem
 
 ---
 
-### Changes
+### Pliki do edycji
 
-**1. AppLayout.tsx -- Make layers translucent (dark mode)**
-
-- Main wrapper: change `bg-background` to `bg-background/80` or use `bg-transparent` in dark mode
-- Sidebar: change `bg-sidebar` to `bg-sidebar/90 backdrop-blur-md` so the oil slick subtly shows through with a frosted glass effect
-- Mobile header: add `backdrop-blur` and semi-transparent background
-- Main content area: make background semi-transparent in dark mode
-
-**2. AppLayout.tsx -- Unique sidebar icons**
-
-Replace duplicate icons:
-- Stoiska: `Tent` instead of `Store`
-- Sklepy: `ShoppingBag` instead of `Store`
-- Kontenty: `Image` instead of `FileText`
-- Protokoly: `ClipboardList` instead of `FileText`
-- Increase icon size from `h-5 w-5` to `h-6 w-6`
-
-**3. AppLayout.tsx -- Sidebar hover effects**
-
-- Add glow/scale micro-animation on nav item hover
-- Active item gets a gradient left border accent
-
-**4. Index.tsx -- Button fixes**
-
-- "Rozpocznij prace na magazynie": reduce font to `text-xs` or `text-sm`
-- "Generuj protokol": add gradient background styling
-
-**5. index.css -- Global visual enhancements**
-
-- Add nav item glow hover utility class
-- Enhanced table header gradient styling
-- Row hover glow effect for tables
-- Smooth global transitions on interactive elements
-
-**6. table.tsx -- Premium table headers**
-
-- Gradient background on `TableHead`
-- Uppercase, letter-spacing, centered text
-- Enhanced row hover with visible highlight
-
----
-
-### Technical Details
-
-| File | Changes |
-|------|---------|
-| `src/components/AppLayout.tsx` | Transparent backgrounds, unique icons, hover effects, larger icons |
-| `src/pages/Index.tsx` | Button font fix, protocol button styling |
-| `src/index.css` | Nav glow class, table styling, global transitions |
-| `src/components/ui/table.tsx` | Premium header gradient, row hover enhancement |
-
-The key fix is making the layout layers semi-transparent so the animated oil slick background becomes visible beneath the UI.
+| Plik | Zmiany |
+|------|--------|
+| `src/components/OilSlickBackground.tsx` | Kompletne przepisanie na `SpaceBackground` (gwiazdki + shooting star) |
+| `src/index.css` | Usuniecie oil-drift keyframes, dodanie twinkle + shooting-star + hover-levitate + hover-glow utilities |
+| `src/components/AppLayout.tsx` | Dodanie "Dashboard" do menu, import LayoutDashboard, hover efekty na NavLink (rotate ikony, glow, lewitacja) |
+| `src/pages/StandsPage.tsx` | Efekt lewitacji na kartach stoisk |
+| `src/components/ui/table.tsx` | Efekt lewitacji na wierszach tabeli (hover translateY + cien) |
 
