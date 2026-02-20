@@ -3,7 +3,8 @@ import { motion } from "framer-motion";
 import { mockEvents, type EventTrip } from "@/data/mock-events";
 import { ArrowLeft, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Table, TableBody, TableRow } from "@/components/ui/table";
+import { TableBody, TableRow } from "@/components/ui/table";
+import { AdminTable } from "@/components/AdminTable";
 import { EditableCell } from "@/components/EditableCell";
 
 function statusLabel(s: EventTrip["status"]) {
@@ -103,7 +104,7 @@ export default function EventDetailPage() {
 
       {/* Full data table */}
       <div className="bg-card border border-border rounded-xl overflow-hidden">
-        <Table className="admin-table">
+        <AdminTable>
           <TableBody>
             {rows.map((row, i) => {
               const isSection = row.label === "PROTOKÓŁ";
@@ -123,7 +124,7 @@ export default function EventDetailPage() {
               );
             })}
           </TableBody>
-        </Table>
+        </AdminTable>
       </div>
     </motion.div>
   );

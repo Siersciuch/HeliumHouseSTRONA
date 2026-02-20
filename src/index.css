@@ -158,14 +158,44 @@
   }
 }
 
-/* Admin resizable table columns */
-.admin-table th {
-  resize: horizontal;
-  overflow: hidden;
-  min-width: 60px;
-  cursor: col-resize;
+/* Admin resizable table – rows & columns */
+.admin-table th,
+.admin-table td {
+  position: relative;
 }
 
-.admin-table th:active {
-  border-right: 2px solid hsl(var(--primary));
+.admin-table tr.row-selected {
+  background: hsl(var(--primary) / 0.08);
+}
+
+.admin-table .col-resize-handle {
+  position: absolute;
+  top: 0;
+  right: -2px;
+  width: 5px;
+  height: 100%;
+  cursor: col-resize;
+  z-index: 2;
+  user-select: none;
+}
+
+.admin-table .col-resize-handle:hover,
+.admin-table .col-resize-handle.resizing {
+  background: hsl(var(--primary) / 0.5);
+}
+
+.admin-table .row-resize-handle {
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 5px;
+  cursor: row-resize;
+  z-index: 2;
+  user-select: none;
+}
+
+.admin-table .row-resize-handle:hover,
+.admin-table .row-resize-handle.resizing {
+  background: hsl(var(--primary) / 0.5);
 }
