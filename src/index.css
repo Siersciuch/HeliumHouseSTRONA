@@ -158,6 +158,38 @@
   }
 }
 
+/* Oil Slick Background Animations */
+@keyframes oil-drift-1 {
+  0% { transform: translate(0, 0) scale(1); opacity: 0.20; }
+  25% { transform: translate(8vw, 5vh) scale(1.15); opacity: 0.25; }
+  50% { transform: translate(3vw, 12vh) scale(0.95); opacity: 0.18; }
+  75% { transform: translate(-5vw, 6vh) scale(1.1); opacity: 0.22; }
+  100% { transform: translate(0, 0) scale(1); opacity: 0.20; }
+}
+@keyframes oil-drift-2 {
+  0% { transform: translate(0, 0) scale(1); opacity: 0.15; }
+  30% { transform: translate(-6vw, -8vh) scale(1.2); opacity: 0.20; }
+  60% { transform: translate(4vw, -3vh) scale(0.9); opacity: 0.13; }
+  100% { transform: translate(0, 0) scale(1); opacity: 0.15; }
+}
+@keyframes oil-drift-3 {
+  0% { transform: translate(0, 0) scale(1); opacity: 0.18; }
+  35% { transform: translate(5vw, -10vh) scale(1.1); opacity: 0.22; }
+  65% { transform: translate(-3vw, -5vh) scale(1.2); opacity: 0.15; }
+  100% { transform: translate(0, 0) scale(1); opacity: 0.18; }
+}
+@keyframes oil-drift-4 {
+  0% { transform: translate(0, 0) scale(1); opacity: 0.12; }
+  40% { transform: translate(7vw, 8vh) scale(1.15); opacity: 0.16; }
+  70% { transform: translate(-4vw, 4vh) scale(0.95); opacity: 0.10; }
+  100% { transform: translate(0, 0) scale(1); opacity: 0.12; }
+}
+
+.animate-oil-drift-1 { animation: oil-drift-1 30s ease-in-out infinite; }
+.animate-oil-drift-2 { animation: oil-drift-2 25s ease-in-out infinite; }
+.animate-oil-drift-3 { animation: oil-drift-3 40s ease-in-out infinite; }
+.animate-oil-drift-4 { animation: oil-drift-4 35s ease-in-out infinite; }
+
 /* Admin resizable table – rows & columns */
 .admin-table th,
 .admin-table td {
