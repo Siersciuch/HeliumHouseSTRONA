@@ -168,7 +168,17 @@ export default function PersonDetailPage() {
                       return (
                         <TableRow key={dateStr} className={rowBg}>
                           <EditableCell value={format(day, "dd.MM.yyyy")} className={`text-xs text-muted-foreground ${compactCls}`} />
-                          <EditableCell value="—" colSpan={11} className={`text-xs text-muted-foreground/50 ${compactCls}`} />
+                          <EditableCell value="—" className={`text-xs text-muted-foreground/50 ${compactCls}`} />
+                          <EditableCell value="—" className={`text-xs text-muted-foreground/50 ${compactCls}`} />
+                          <EditableCell value="—" className={`text-xs text-muted-foreground/50 ${compactCls}`} />
+                          <EditableCell value="—" className={`text-xs text-muted-foreground/50 ${compactCls}`} />
+                          <EditableCell value="—" className={`text-xs text-muted-foreground/50 ${compactCls}`} />
+                          <EditableCell value="—" className={`text-xs text-muted-foreground/50 ${compactCls}`} />
+                          <EditableCell value="—" className={`text-xs text-muted-foreground/50 ${compactCls}`} />
+                          <EditableCell value="—" className={`text-xs text-muted-foreground/50 ${compactCls}`} />
+                          <EditableCell value="—" className={`text-xs text-muted-foreground/50 ${compactCls}`} />
+                          <EditableCell value="—" className={`text-xs text-muted-foreground/50 ${compactCls}`} />
+                          <EditableCell value="—" className={`text-xs text-muted-foreground/50 ${compactCls}`} />
                         </TableRow>
                       );
                     }
