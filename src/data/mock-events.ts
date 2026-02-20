@@ -12,6 +12,7 @@ export interface EventTrip {
   testers: string[];
   notes: string;
   date: string; // ISO
+  time: string; // e.g. "08:00"
 }
 
 const today = new Date();
@@ -29,6 +30,7 @@ export const mockEvents: EventTrip[] = [
     testers: ["T-001", "T-003"],
     notes: "Event zakończony pomyślnie",
     date: format(addDays(today, -1), "yyyy-MM-dd"),
+    time: "07:00",
   },
   {
     id: "ev2",
@@ -42,6 +44,7 @@ export const mockEvents: EventTrip[] = [
     testers: ["T-002"],
     notes: "W trakcie montażu",
     date: format(today, "yyyy-MM-dd"),
+    time: "09:00",
   },
   {
     id: "ev3",
@@ -55,6 +58,7 @@ export const mockEvents: EventTrip[] = [
     testers: ["T-001", "T-004"],
     notes: "",
     date: format(today, "yyyy-MM-dd"),
+    time: "10:30",
   },
   {
     id: "ev4",
@@ -68,6 +72,7 @@ export const mockEvents: EventTrip[] = [
     testers: ["T-002", "T-003"],
     notes: "Klient prosi o wcześniejszy montaż",
     date: format(addDays(today, 1), "yyyy-MM-dd"),
+    time: "06:30",
   },
   {
     id: "ev5",
@@ -81,6 +86,7 @@ export const mockEvents: EventTrip[] = [
     testers: ["T-005"],
     notes: "",
     date: format(addDays(today, 2), "yyyy-MM-dd"),
+    time: "08:00",
   },
   {
     id: "ev6",
@@ -94,6 +100,7 @@ export const mockEvents: EventTrip[] = [
     testers: ["T-001"],
     notes: "",
     date: format(addDays(today, 3), "yyyy-MM-dd"),
+    time: "11:00",
   },
   {
     id: "ev7",
@@ -107,6 +114,7 @@ export const mockEvents: EventTrip[] = [
     testers: ["T-002", "T-004"],
     notes: "",
     date: format(addDays(today, 5), "yyyy-MM-dd"),
+    time: "07:30",
   },
 ];
 

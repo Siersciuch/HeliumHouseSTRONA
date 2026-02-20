@@ -9,6 +9,7 @@ import AppLayout from "@/components/AppLayout";
 import LoginPage from "@/pages/LoginPage";
 import Index from "@/pages/Index";
 import EventsPage from "@/pages/EventsPage";
+import EventDetailPage from "@/pages/EventDetailPage";
 import PeoplePage from "@/pages/PeoplePage";
 import FleetPage from "@/pages/FleetPage";
 import TestersPage from "@/pages/TestersPage";
@@ -39,6 +40,7 @@ function AppRoutes() {
       <Route path="/login" element={<AuthRoute><LoginPage /></AuthRoute>} />
       <Route path="/" element={<ProtectedRoute><Index /></ProtectedRoute>} />
       <Route path="/events" element={<ProtectedRoute><EventsPage /></ProtectedRoute>} />
+      <Route path="/events/:id" element={<ProtectedRoute><EventDetailPage /></ProtectedRoute>} />
       <Route path="/people" element={<ProtectedRoute><PeoplePage /></ProtectedRoute>} />
       <Route path="/fleet" element={<ProtectedRoute><FleetPage /></ProtectedRoute>} />
       <Route path="/testers" element={<ProtectedRoute><TestersPage /></ProtectedRoute>} />
