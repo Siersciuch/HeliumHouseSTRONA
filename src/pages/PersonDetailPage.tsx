@@ -2,11 +2,10 @@ import { useParams, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { mockPeople } from "@/data/mock-data";
 import { mockEvents } from "@/data/mock-events";
-import { ArrowLeft, Phone, Mail, MapPin, Shield, Key, Car, IdCard } from "lucide-react";
+import { ArrowLeft, Phone, Mail, MapPin, Shield, Key, Car, IdCard, Smartphone, Clock, StickyNote, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { addDays, format, getDaysInMonth } from "date-fns";
-import { pl } from "date-fns/locale";
+import { addDays, format } from "date-fns";
 
 // Billing months: 26th prev → 25th current
 const billingMonths = [
@@ -65,30 +64,34 @@ export default function PersonDetailPage() {
       </div>
 
       {/* All person info */}
-      <div className="bg-card border border-border rounded-xl p-5 grid grid-cols-2 sm:grid-cols-3 gap-4 text-sm">
-        {person.phone && (
-          <div className="flex items-center gap-2"><Phone className="h-4 w-4 text-muted-foreground" />{person.phone}</div>
-        )}
-        {person.email && (
-          <div className="flex items-center gap-2"><Mail className="h-4 w-4 text-muted-foreground" />{person.email}</div>
-        )}
-        {person.city && (
-          <div className="flex items-center gap-2"><MapPin className="h-4 w-4 text-muted-foreground" />{person.city}</div>
-        )}
-        {person.drivingLicense && (
-          <div className="flex items-center gap-2"><Car className="h-4 w-4 text-muted-foreground" />Prawo jazdy: {person.drivingLicense}</div>
-        )}
+      <div className="bg-card border border-border rounded-xl p-5 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 text-sm">
+        <div className="flex items-center gap-2"><Phone className="h-4 w-4 text-muted-foreground" />{person.phone || "—"}</div>
+        <div className="flex items-center gap-2"><Mail className="h-4 w-4 text-muted-foreground" />{person.email || "—"}</div>
+        <div className="flex items-center gap-2"><MapPin className="h-4 w-4 text-muted-foreground" />{person.city || "—"}</div>
+        <div className="flex items-center gap-2"><Car className="h-4 w-4 text-muted-foreground" />Prawo jazdy: {person.drivingLicense || "—"}</div>
+        <div className="flex items-center gap-2">
+          <IdCard className="h-4 w-4 text-muted-foreground" />
+          Upr. elektryczne: {person.electricalCert ? <span className="text-emerald-400">Tak</span> : <span className="text-muted-foreground">Nie</span>}
+        </div>
+        <div className="flex items-center gap-2">
+          <IdCard className="h-4 w-4 text-muted-foreground" />
+          Upr. wysokościowe: {person.heightCert ? <span className="text-emerald-400">Tak</span> : <span className="text-muted-foreground">Nie</span>}
+        </div>
+        <div className="flex items-center gap-2">
+          <Key className="h-4 w-4 text-warning" />
+          Klucze magazynu: {person.hasKeys ? <span className="text-emerald-400">Tak</span> : <span className="text-muted-foreground">Nie</span>}
+        </div>
+        <div className="flex items-center gap-2">
+          <ShieldCheck className="h-4 w-4 text-muted-foreground" />
+          2FA: {person.twoFA ? <span className="text-emerald-400">Tak</span> : <span className="text-muted-foreground">Nie</span>}
+        </div>
+        <div className="flex items-center gap-2"><Smartphone className="h-4 w-4 text-muted-foreground" />Urządzenia: {person.devices || "—"}</div>
+        <div className="flex items-center gap-2"><Clock className="h-4 w-4 text-muted-foreground" />Ost. logowanie: {person.lastLogin || "—"}</div>
         {person.isAdmin && (
           <div className="flex items-center gap-2 text-emerald-400"><Shield className="h-4 w-4" /> Admin</div>
         )}
-        {person.hasKeys && (
-          <div className="flex items-center gap-2 text-warning"><Key className="h-4 w-4" /> Klucze</div>
-        )}
-        {person.electricalCert && (
-          <div className="flex items-center gap-2"><IdCard className="h-4 w-4 text-muted-foreground" /> Uprawnienia elektryczne</div>
-        )}
-        {person.heightCert && (
-          <div className="flex items-center gap-2"><IdCard className="h-4 w-4 text-muted-foreground" /> Praca na wysokości</div>
+        {person.notes && (
+          <div className="flex items-center gap-2 col-span-2"><StickyNote className="h-4 w-4 text-muted-foreground" />Uwagi: {person.notes}</div>
         )}
       </div>
 
