@@ -70,8 +70,8 @@ export function EditableCell({ value, onSave, className, children, colSpan, rowS
       className={cn("cursor-pointer hover:bg-accent/40 transition-colors", className)}
       colSpan={colSpan}
       rowSpan={rowSpan}
-      onDoubleClick={() => setEditing(true)}
-      title="Kliknij dwukrotnie, aby edytować"
+      onClick={() => setEditing(true)}
+      title="Kliknij, aby edytować"
     >
       {children ?? value}
     </TableCell>

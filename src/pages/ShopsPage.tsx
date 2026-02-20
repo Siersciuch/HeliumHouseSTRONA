@@ -1,7 +1,8 @@
 import { motion } from "framer-motion";
 import { mockShops } from "@/data/mock-shops";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Check, X } from "lucide-react";
+import { EditableCell } from "@/components/EditableCell";
 
 export default function ShopsPage() {
   return (
@@ -9,7 +10,7 @@ export default function ShopsPage() {
       <h1 className="text-2xl font-bold">Sklepy Douglas</h1>
       <div className="bg-card border border-border rounded-xl overflow-hidden">
         <div className="overflow-x-auto">
-          <Table>
+          <Table className="admin-table">
             <TableHeader>
               <TableRow>
                 <TableHead className="w-14">Nr filii</TableHead>
@@ -28,19 +29,19 @@ export default function ShopsPage() {
             <TableBody>
               {mockShops.map((s) => (
                 <TableRow key={s.id}>
-                  <TableCell className="font-medium">{s.branchNo}</TableCell>
-                  <TableCell className="font-medium">{s.gallery}</TableCell>
-                  <TableCell className="text-muted-foreground text-xs">{s.address}</TableCell>
-                  <TableCell className="text-muted-foreground text-xs">{s.postalCode}</TableCell>
-                  <TableCell className="text-muted-foreground text-xs">{s.phone}</TableCell>
-                  <TableCell className="text-muted-foreground text-xs">{s.email}</TableCell>
-                  <TableCell className="text-muted-foreground text-xs">{s.phone2 || "—"}</TableCell>
-                  <TableCell className="text-muted-foreground text-xs">{s.hours}</TableCell>
-                  <TableCell className="text-center">
+                  <EditableCell value={String(s.branchNo)} className="font-medium" />
+                  <EditableCell value={s.gallery} className="font-medium" />
+                  <EditableCell value={s.address} className="text-muted-foreground text-xs" />
+                  <EditableCell value={s.postalCode} className="text-muted-foreground text-xs" />
+                  <EditableCell value={s.phone} className="text-muted-foreground text-xs" />
+                  <EditableCell value={s.email} className="text-muted-foreground text-xs" />
+                  <EditableCell value={s.phone2 || "—"} className="text-muted-foreground text-xs" />
+                  <EditableCell value={s.hours} className="text-muted-foreground text-xs" />
+                  <EditableCell value={s.hasElevator ? "Tak" : "Nie"} className="text-center">
                     {s.hasElevator ? <Check className="h-4 w-4 text-emerald-400 mx-auto" /> : <X className="h-4 w-4 text-muted-foreground/30 mx-auto" />}
-                  </TableCell>
-                  <TableCell className="text-muted-foreground">{s.distance}</TableCell>
-                  <TableCell className="text-muted-foreground">{s.travelTime}</TableCell>
+                  </EditableCell>
+                  <EditableCell value={s.distance} className="text-muted-foreground" />
+                  <EditableCell value={s.travelTime} className="text-muted-foreground" />
                 </TableRow>
               ))}
             </TableBody>

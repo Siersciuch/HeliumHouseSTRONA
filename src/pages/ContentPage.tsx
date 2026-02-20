@@ -1,7 +1,8 @@
 import { motion } from "framer-motion";
 import { mockBrandContent } from "@/data/mock-data";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Download } from "lucide-react";
+import { EditableCell } from "@/components/EditableCell";
 
 export default function ContentPage() {
   return (
@@ -9,7 +10,7 @@ export default function ContentPage() {
       <h1 className="text-2xl font-bold">Kontenty</h1>
       <p className="text-sm text-muted-foreground">Spis kontentów wideo marek do monitorów (pion / poziom)</p>
       <div className="bg-card border border-border rounded-xl overflow-hidden">
-        <Table>
+        <Table className="admin-table">
           <TableHeader>
             <TableRow>
               <TableHead>LP</TableHead>
@@ -22,25 +23,26 @@ export default function ContentPage() {
           <TableBody>
             {mockBrandContent.map((c, i) => (
               <TableRow key={c.id}>
-                <TableCell className="text-muted-foreground">{i + 1}</TableCell>
-                <TableCell className="font-medium">{c.brand}</TableCell>
-                <TableCell className="text-center">
+                <EditableCell value={String(i + 1)} className="text-muted-foreground" />
+                <EditableCell value={c.brand} className="font-medium" />
+                <EditableCell value={c.hasVertical ? "Pobierz" : "brak"} className="text-center">
                   {c.hasVertical ? (
                     <a href="#" className="inline-flex items-center gap-1 text-xs text-primary hover:underline">
                       <Download className="h-3.5 w-3.5" /> Pobierz
                     </a>
                   ) : null}
-                </TableCell>
-                <TableCell className="text-center">
+                </EditableCell>
+                <EditableCell value={c.hasHorizontal ? "Pobierz" : "brak"} className="text-center">
                   {c.hasHorizontal ? (
                     <a href="#" className="inline-flex items-center gap-1 text-xs text-primary hover:underline">
                       <Download className="h-3.5 w-3.5" /> Pobierz
                     </a>
                   ) : null}
-                </TableCell>
-                <TableCell className="text-muted-foreground text-sm">
-                  {!c.hasVertical && !c.hasHorizontal ? "brak" : !c.hasVertical ? "brak pionu" : !c.hasHorizontal ? "brak poziomu" : c.notes || "—"}
-                </TableCell>
+                </EditableCell>
+                <EditableCell
+                  value={!c.hasVertical && !c.hasHorizontal ? "brak" : !c.hasVertical ? "brak pionu" : !c.hasHorizontal ? "brak poziomu" : c.notes || "—"}
+                  className="text-muted-foreground text-sm"
+                />
               </TableRow>
             ))}
           </TableBody>

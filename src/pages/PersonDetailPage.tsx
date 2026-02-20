@@ -4,7 +4,8 @@ import { mockPeople } from "@/data/mock-data";
 import { mockEvents } from "@/data/mock-events";
 import { ArrowLeft, Phone, Mail, MapPin, Shield, Key, Car, IdCard, Smartphone, Clock, StickyNote, ShieldCheck, UserCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { EditableCell } from "@/components/EditableCell";
 import { addDays, format } from "date-fns";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -33,9 +34,9 @@ const DAYS_SHORT = ["Nd", "Pn", "Wt", "Śr", "Cz", "Pt", "Sb"];
 export default function PersonDetailPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { user, impersonate } = useAuth();
+  const { user, impersonate, isImpersonating, realUser } = useAuth();
   const person = mockPeople.find((p) => p.id === id);
-  const isAdmin = user?.role === "admin";
+  const isAdmin = isImpersonating ? realUser?.role === "admin" : user?.role === "admin";
 
   if (!person) {
     return (
@@ -50,9 +51,27 @@ export default function PersonDetailPage() {
 
   const personEvents = mockEvents.filter((ev) => person.trips.includes(ev.id));
   const year = new Date().getFullYear();
-
-  // Compact months (Marzec, Kwiecień)
   const compactMonths = ["Marzec", "Kwiecień"];
+
+  const infoItems: { icon: React.ReactNode; label: string; value: string; highlight?: boolean }[] = [
+    { icon: <Phone className="h-4 w-4 text-muted-foreground" />, label: "Telefon", value: person.phone || "—" },
+    { icon: <Mail className="h-4 w-4 text-muted-foreground" />, label: "Email", value: person.email || "—" },
+    { icon: <MapPin className="h-4 w-4 text-muted-foreground" />, label: "Miasto", value: person.city || "—" },
+    { icon: <Car className="h-4 w-4 text-muted-foreground" />, label: "Prawo jazdy", value: person.drivingLicense || "—" },
+    { icon: <IdCard className="h-4 w-4 text-muted-foreground" />, label: "Upr. elektryczne", value: person.electricalCert ? "Tak" : "Nie" },
+    { icon: <IdCard className="h-4 w-4 text-muted-foreground" />, label: "Upr. wysokościowe", value: person.heightCert ? "Tak" : "Nie" },
+    { icon: <Key className="h-4 w-4 text-warning" />, label: "Klucze magazynu", value: person.hasKeys ? "Tak" : "Nie" },
+    { icon: <ShieldCheck className="h-4 w-4 text-muted-foreground" />, label: "2FA", value: person.twoFA ? "Tak" : "Nie" },
+    { icon: <Smartphone className="h-4 w-4 text-muted-foreground" />, label: "Urządzenia", value: person.devices || "—" },
+    { icon: <Clock className="h-4 w-4 text-muted-foreground" />, label: "Ost. logowanie", value: person.lastLogin || "—" },
+  ];
+
+  if (person.isAdmin) {
+    infoItems.push({ icon: <Shield className="h-4 w-4" />, label: "Rola", value: "Admin", highlight: true });
+  }
+  if (person.notes) {
+    infoItems.push({ icon: <StickyNote className="h-4 w-4 text-muted-foreground" />, label: "Uwagi", value: person.notes });
+  }
 
   return (
     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6 max-w-5xl">
@@ -83,39 +102,26 @@ export default function PersonDetailPage() {
         )}
       </div>
 
-      {/* All person info */}
-      <div className="bg-card border border-border rounded-xl p-5 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 text-sm">
-        <div className="flex items-center gap-2"><Phone className="h-4 w-4 text-muted-foreground" />{person.phone || "—"}</div>
-        <div className="flex items-center gap-2"><Mail className="h-4 w-4 text-muted-foreground" />{person.email || "—"}</div>
-        <div className="flex items-center gap-2"><MapPin className="h-4 w-4 text-muted-foreground" />{person.city || "—"}</div>
-        <div className="flex items-center gap-2"><Car className="h-4 w-4 text-muted-foreground" />Prawo jazdy: {person.drivingLicense || "—"}</div>
-        <div className="flex items-center gap-2">
-          <IdCard className="h-4 w-4 text-muted-foreground" />
-          Upr. elektryczne: {person.electricalCert ? <span className="text-emerald-400">Tak</span> : <span className="text-muted-foreground">Nie</span>}
-        </div>
-        <div className="flex items-center gap-2">
-          <IdCard className="h-4 w-4 text-muted-foreground" />
-          Upr. wysokościowe: {person.heightCert ? <span className="text-emerald-400">Tak</span> : <span className="text-muted-foreground">Nie</span>}
-        </div>
-        <div className="flex items-center gap-2">
-          <Key className="h-4 w-4 text-warning" />
-          Klucze magazynu: {person.hasKeys ? <span className="text-emerald-400">Tak</span> : <span className="text-muted-foreground">Nie</span>}
-        </div>
-        <div className="flex items-center gap-2">
-          <ShieldCheck className="h-4 w-4 text-muted-foreground" />
-          2FA: {person.twoFA ? <span className="text-emerald-400">Tak</span> : <span className="text-muted-foreground">Nie</span>}
-        </div>
-        <div className="flex items-center gap-2"><Smartphone className="h-4 w-4 text-muted-foreground" />Urządzenia: {person.devices || "—"}</div>
-        <div className="flex items-center gap-2"><Clock className="h-4 w-4 text-muted-foreground" />Ost. logowanie: {person.lastLogin || "—"}</div>
-        {person.isAdmin && (
-          <div className="flex items-center gap-2 text-emerald-400"><Shield className="h-4 w-4" /> Admin</div>
-        )}
-        {person.notes && (
-          <div className="flex items-center gap-2 col-span-2"><StickyNote className="h-4 w-4 text-muted-foreground" />Uwagi: {person.notes}</div>
-        )}
+      {/* Person info as editable table */}
+      <div className="bg-card border border-border rounded-xl overflow-hidden">
+        <Table className="admin-table">
+          <TableBody>
+            {infoItems.map((item, i) => (
+              <TableRow key={i}>
+                <EditableCell value={item.label} className="font-medium text-muted-foreground w-[200px] whitespace-nowrap text-sm">
+                  <span className="flex items-center gap-2">{item.icon} {item.label}</span>
+                </EditableCell>
+                <EditableCell
+                  value={item.value}
+                  className={`text-sm ${item.highlight ? "text-emerald-400" : ""}`}
+                />
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
       </div>
 
-      {/* Monthly billing tables — April on top, January on bottom */}
+      {/* Monthly billing tables */}
       {billingMonths.map((bm) => {
         const days = getBillingDays(bm, year);
         const isCompact = compactMonths.includes(bm.label);
@@ -123,7 +129,7 @@ export default function PersonDetailPage() {
           <div key={bm.label} className="space-y-2">
             <h2 className="text-lg font-semibold">{bm.label} {year}</h2>
             <div className="bg-card border border-border rounded-xl overflow-x-auto">
-              <Table>
+              <Table className="admin-table">
                 <TableHeader>
                   <TableRow>
                     <TableHead className="w-16">Data</TableHead>
@@ -146,9 +152,9 @@ export default function PersonDetailPage() {
                     if (dayEvents.length === 0) {
                       return (
                         <TableRow key={dateStr} className={rowBg}>
-                          <TableCell className={`text-xs text-muted-foreground ${compactCls}`}>{format(day, "dd.MM")}</TableCell>
-                          <TableCell className={`text-xs text-muted-foreground ${compactCls}`}>{DAYS_SHORT[day.getDay()]}</TableCell>
-                          <TableCell colSpan={5} className={`text-xs text-muted-foreground/50 ${compactCls}`}>—</TableCell>
+                          <EditableCell value={format(day, "dd.MM")} className={`text-xs text-muted-foreground ${compactCls}`} />
+                          <EditableCell value={DAYS_SHORT[day.getDay()]} className={`text-xs text-muted-foreground ${compactCls}`} />
+                          <EditableCell value="—" colSpan={5} className={`text-xs text-muted-foreground/50 ${compactCls}`} />
                         </TableRow>
                       );
                     }
@@ -161,15 +167,15 @@ export default function PersonDetailPage() {
                       >
                         {idx === 0 && (
                           <>
-                            <TableCell className={`text-xs font-medium ${compactCls}`} rowSpan={dayEvents.length}>{format(day, "dd.MM")}</TableCell>
-                            <TableCell className={`text-xs text-muted-foreground ${compactCls}`} rowSpan={dayEvents.length}>{DAYS_SHORT[day.getDay()]}</TableCell>
+                            <EditableCell value={format(day, "dd.MM")} className={`text-xs font-medium ${compactCls}`} rowSpan={dayEvents.length} />
+                            <EditableCell value={DAYS_SHORT[day.getDay()]} className={`text-xs text-muted-foreground ${compactCls}`} rowSpan={dayEvents.length} />
                           </>
                         )}
-                        <TableCell className={`text-xs font-medium ${compactCls}`}>{ev.standShort}</TableCell>
-                        <TableCell className={`text-xs ${compactCls}`}>{ev.city}</TableCell>
-                        <TableCell className={`text-xs text-muted-foreground ${compactCls}`}>{ev.client}</TableCell>
-                        <TableCell className={`text-xs text-muted-foreground ${compactCls}`}>{ev.vehicle}</TableCell>
-                        <TableCell className={compactCls}>
+                        <EditableCell value={ev.standShort} className={`text-xs font-medium ${compactCls}`} />
+                        <EditableCell value={ev.city} className={`text-xs ${compactCls}`} />
+                        <EditableCell value={ev.client} className={`text-xs text-muted-foreground ${compactCls}`} />
+                        <EditableCell value={ev.vehicle} className={`text-xs text-muted-foreground ${compactCls}`} />
+                        <EditableCell value={ev.status === "planned" ? "Plan" : ev.status === "in-progress" ? "W trakcie" : ev.status === "completed" ? "OK" : "Anul."} className={compactCls}>
                           <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${
                             ev.status === "completed" ? "bg-emerald-500/20 text-emerald-400" :
                             ev.status === "in-progress" ? "bg-orange-400/20 text-orange-400" :
@@ -178,7 +184,7 @@ export default function PersonDetailPage() {
                           }`}>
                             {ev.status === "planned" ? "Plan" : ev.status === "in-progress" ? "W trakcie" : ev.status === "completed" ? "OK" : "Anul."}
                           </span>
-                        </TableCell>
+                        </EditableCell>
                       </TableRow>
                     ));
                   })}
