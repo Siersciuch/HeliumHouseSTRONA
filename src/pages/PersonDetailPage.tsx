@@ -2,7 +2,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { mockPeople } from "@/data/mock-data";
 import { mockEvents } from "@/data/mock-events";
-import { ArrowLeft, Phone, Mail, MapPin, Shield, Key, Car, IdCard, Smartphone, Clock, StickyNote, ShieldCheck, UserCheck } from "lucide-react";
+import { ArrowLeft, Phone, Mail, MapPin, Shield, Key, Car, IdCard, Smartphone, Clock, StickyNote, ShieldCheck, UserCheck, Warehouse } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { TableBody, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { AdminTable } from "@/components/AdminTable";
@@ -103,6 +103,15 @@ export default function PersonDetailPage() {
         )}
       </div>
 
+      {/* Warehouse work button */}
+      <Button
+        className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-bold text-lg py-6"
+        onClick={() => navigate("/warehouse-work")}
+      >
+        <Warehouse className="h-5 w-5 mr-2" />
+        Rozpocznij pracę na magazynie
+      </Button>
+
       {/* Person info as editable table */}
       <div className="bg-card border border-border rounded-xl overflow-hidden">
         <AdminTable>
@@ -129,7 +138,7 @@ export default function PersonDetailPage() {
         return (
           <div key={bm.label} className="space-y-2">
             <h2 className="text-lg font-semibold">{bm.label} {year}</h2>
-            <div className="bg-card border border-border rounded-xl overflow-x-auto">
+            <div className="bg-card border border-border rounded-xl overflow-hidden">
               <AdminTable>
                 <TableHeader>
                   <TableRow>
@@ -139,7 +148,10 @@ export default function PersonDetailPage() {
                     <TableHead>Miasto</TableHead>
                     <TableHead>Klient</TableHead>
                     <TableHead>Pojazd</TableHead>
+                    <TableHead className="w-16">Godz.</TableHead>
+                    <TableHead className="w-16">Foto</TableHead>
                     <TableHead className="w-20">Status</TableHead>
+                    <TableHead className="w-20">Wartość</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -155,7 +167,7 @@ export default function PersonDetailPage() {
                         <TableRow key={dateStr} className={rowBg}>
                           <EditableCell value={format(day, "dd.MM")} className={`text-xs text-muted-foreground ${compactCls}`} />
                           <EditableCell value={DAYS_SHORT[day.getDay()]} className={`text-xs text-muted-foreground ${compactCls}`} />
-                          <EditableCell value="—" colSpan={5} className={`text-xs text-muted-foreground/50 ${compactCls}`} />
+                          <EditableCell value="—" colSpan={8} className={`text-xs text-muted-foreground/50 ${compactCls}`} />
                         </TableRow>
                       );
                     }
@@ -176,6 +188,8 @@ export default function PersonDetailPage() {
                         <EditableCell value={ev.city} className={`text-xs ${compactCls}`} />
                         <EditableCell value={ev.client} className={`text-xs text-muted-foreground ${compactCls}`} />
                         <EditableCell value={ev.vehicle} className={`text-xs text-muted-foreground ${compactCls}`} />
+                        <EditableCell value={ev.time || "—"} className={`text-xs ${compactCls}`} />
+                        <EditableCell value={ev.photos?.length ? `${ev.photos.length} zdjęć` : "—"} className={`text-xs ${compactCls}`} />
                         <EditableCell value={ev.status === "planned" ? "Plan" : ev.status === "in-progress" ? "W trakcie" : ev.status === "completed" ? "OK" : "Anul."} className={compactCls}>
                           <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${
                             ev.status === "completed" ? "bg-emerald-500/20 text-emerald-400" :
@@ -186,6 +200,7 @@ export default function PersonDetailPage() {
                             {ev.status === "planned" ? "Plan" : ev.status === "in-progress" ? "W trakcie" : ev.status === "completed" ? "OK" : "Anul."}
                           </span>
                         </EditableCell>
+                        <EditableCell value="" className={`text-xs ${compactCls}`} />
                       </TableRow>
                     ));
                   })}
