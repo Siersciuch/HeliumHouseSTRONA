@@ -83,16 +83,13 @@ function DayTile({ date, size, events, onSelectEvent }: DayTileProps) {
         <span className={`font-bold leading-none ${size === "large" ? "text-3xl" : size === "medium" ? "text-2xl" : "text-xl"}`}>
           {dayNum}
         </span>
-        <span className={`${size === "large" ? "text-sm" : "text-xs"} text-foreground/70 capitalize`}>{monthName}</span>
-        <span className={`${size === "large" ? "text-xs" : "text-[11px]"} text-foreground/50`}>{dayShort}</span>
+        <span className={`${size === "large" ? "text-base" : size === "medium" ? "text-sm" : "text-xs"} text-foreground/70 capitalize`}>{monthName}</span>
+        <span className={`${size === "large" ? "text-sm" : size === "medium" ? "text-xs" : "text-[11px]"} text-foreground/50`}>{dayShort}</span>
         {isToday(date) && (
           <span className="text-[10px] font-semibold bg-emerald-600/30 text-emerald-300 rounded-full px-2 py-0.5 mt-1">DZIŚ</span>
         )}
         {isTomorrow(date) && (
           <span className="text-[10px] font-semibold bg-orange-500/30 text-orange-300 rounded-full px-2 py-0.5 mt-1">JUTRO</span>
-        )}
-        {isDayAfterTomorrow(date) && (
-          <span className="text-[10px] font-semibold bg-orange-500/30 text-orange-300 rounded-full px-2 py-0.5 mt-1">POJUTRZE</span>
         )}
       </div>
 

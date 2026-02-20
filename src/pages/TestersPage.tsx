@@ -24,11 +24,11 @@ export default function TestersPage() {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>LP</TableHead>
-                    <TableHead>Nazwa</TableHead>
-                    <TableHead className="text-center">Ilość szt.</TableHead>
-                    <TableHead className="text-center">Poza magazynem</TableHead>
-                    <TableHead>NFC</TableHead>
+                    <TableHead className="w-10">LP</TableHead>
+                    <TableHead className="w-36">Nazwa</TableHead>
+                    <TableHead className="text-center w-16">Szt.</TableHead>
+                    <TableHead className="text-center w-16">Poza mag.</TableHead>
+                    <TableHead className="min-w-[200px]">NFC</TableHead>
                     <TableHead>Event</TableHead>
                     <TableHead>Status</TableHead>
                     <TableHead>Uwagi</TableHead>

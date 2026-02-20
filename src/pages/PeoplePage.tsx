@@ -9,7 +9,7 @@ export default function PeoplePage() {
 
   return (
     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
-      <h1 className="text-2xl font-bold">Ludzie</h1>
+      {/* no title — "Ekipa" is in the sidebar */}
       <div className="bg-card border border-border rounded-xl overflow-hidden">
         <Table>
           <TableHeader>

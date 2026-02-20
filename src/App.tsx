@@ -12,6 +12,7 @@ import EventsPage from "@/pages/EventsPage";
 import EventDetailPage from "@/pages/EventDetailPage";
 import PeoplePage from "@/pages/PeoplePage";
 import FleetPage from "@/pages/FleetPage";
+import VehicleDetailPage from "@/pages/VehicleDetailPage";
 import TestersPage from "@/pages/TestersPage";
 import StandsPage from "@/pages/StandsPage";
 import StandDetailPage from "@/pages/StandDetailPage";
@@ -46,6 +47,7 @@ function AppRoutes() {
       <Route path="/people" element={<ProtectedRoute><PeoplePage /></ProtectedRoute>} />
       <Route path="/people/:id" element={<ProtectedRoute><PersonDetailPage /></ProtectedRoute>} />
       <Route path="/fleet" element={<ProtectedRoute><FleetPage /></ProtectedRoute>} />
+      <Route path="/fleet/:id" element={<ProtectedRoute><VehicleDetailPage /></ProtectedRoute>} />
       <Route path="/testers" element={<ProtectedRoute><TestersPage /></ProtectedRoute>} />
       <Route path="/stands" element={<ProtectedRoute><StandsPage /></ProtectedRoute>} />
       <Route path="/stands/:id" element={<ProtectedRoute><StandDetailPage /></ProtectedRoute>} />
