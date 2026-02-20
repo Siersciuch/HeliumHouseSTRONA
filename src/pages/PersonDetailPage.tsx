@@ -113,7 +113,7 @@ export default function PersonDetailPage() {
       </Button>
 
       {/* Person info as editable table */}
-      <div className="bg-card border border-border rounded-xl overflow-hidden">
+      <div className="bg-card border border-border rounded-xl">
         <AdminTable>
           <TableBody>
             {infoItems.map((item, i) => (
@@ -138,8 +138,8 @@ export default function PersonDetailPage() {
         return (
           <div key={bm.label} className="space-y-2">
             <h2 className="text-lg font-semibold">{bm.label} {year}</h2>
-            <div className="bg-card border border-border rounded-xl overflow-hidden overflow-y-visible">
-              <AdminTable className="billing-table">
+            <div className="bg-card border border-border rounded-xl">
+              <AdminTable>
                 <TableHeader>
                   <TableRow>
                     <TableHead className="w-16">Data</TableHead>

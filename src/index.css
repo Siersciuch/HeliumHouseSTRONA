@@ -199,10 +199,3 @@
 .admin-table .row-resize-handle.resizing {
   background: hsl(var(--primary) / 0.5);
 }
-
-/* Billing tables – vertical column borders */
-.billing-table th,
-.billing-table td {
-  border-left: 1px solid hsl(var(--border));
-  border-right: 1px solid hsl(var(--border));
-}
