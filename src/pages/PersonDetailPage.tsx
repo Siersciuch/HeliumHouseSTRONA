@@ -7,12 +7,12 @@ import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { addDays, format } from "date-fns";
 
-// Billing months: 26th prev → 25th current
+// Billing months: 26th prev → 25th current — reversed order (April first, January last)
 const billingMonths = [
-  { label: "Styczeń", startMonth: 0, startDay: 26, endMonth: 1, endDay: 25 },
-  { label: "Luty", startMonth: 1, startDay: 26, endMonth: 2, endDay: 25 },
-  { label: "Marzec", startMonth: 2, startDay: 26, endMonth: 3, endDay: 25 },
   { label: "Kwiecień", startMonth: 3, startDay: 26, endMonth: 4, endDay: 25 },
+  { label: "Marzec", startMonth: 2, startDay: 26, endMonth: 3, endDay: 25 },
+  { label: "Luty", startMonth: 1, startDay: 26, endMonth: 2, endDay: 25 },
+  { label: "Styczeń", startMonth: 0, startDay: 26, endMonth: 1, endDay: 25 },
 ];
 
 function getBillingDays(bm: typeof billingMonths[0], year: number) {
@@ -47,6 +47,9 @@ export default function PersonDetailPage() {
 
   const personEvents = mockEvents.filter((ev) => person.trips.includes(ev.id));
   const year = new Date().getFullYear();
+
+  // Compact months (Marzec, Kwiecień)
+  const compactMonths = ["Marzec", "Kwiecień"];
 
   return (
     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6 max-w-5xl">
@@ -95,9 +98,10 @@ export default function PersonDetailPage() {
         )}
       </div>
 
-      {/* Monthly billing tables */}
+      {/* Monthly billing tables — April on top, January on bottom */}
       {billingMonths.map((bm) => {
         const days = getBillingDays(bm, year);
+        const isCompact = compactMonths.includes(bm.label);
         return (
           <div key={bm.label} className="space-y-2">
             <h2 className="text-lg font-semibold">{bm.label} {year}</h2>
@@ -120,13 +124,14 @@ export default function PersonDetailPage() {
                     const dayEvents = personEvents.filter((ev) => ev.date === dateStr);
                     const isWeekend = day.getDay() === 0 || day.getDay() === 6;
                     const rowBg = isWeekend ? "bg-muted/30" : "";
+                    const compactCls = isCompact ? "py-0.5" : "";
 
                     if (dayEvents.length === 0) {
                       return (
                         <TableRow key={dateStr} className={rowBg}>
-                          <TableCell className="text-xs text-muted-foreground">{format(day, "dd.MM")}</TableCell>
-                          <TableCell className="text-xs text-muted-foreground">{DAYS_SHORT[day.getDay()]}</TableCell>
-                          <TableCell colSpan={5} className="text-xs text-muted-foreground/50">—</TableCell>
+                          <TableCell className={`text-xs text-muted-foreground ${compactCls}`}>{format(day, "dd.MM")}</TableCell>
+                          <TableCell className={`text-xs text-muted-foreground ${compactCls}`}>{DAYS_SHORT[day.getDay()]}</TableCell>
+                          <TableCell colSpan={5} className={`text-xs text-muted-foreground/50 ${compactCls}`}>—</TableCell>
                         </TableRow>
                       );
                     }
@@ -139,15 +144,15 @@ export default function PersonDetailPage() {
                       >
                         {idx === 0 && (
                           <>
-                            <TableCell className="text-xs font-medium" rowSpan={dayEvents.length}>{format(day, "dd.MM")}</TableCell>
-                            <TableCell className="text-xs text-muted-foreground" rowSpan={dayEvents.length}>{DAYS_SHORT[day.getDay()]}</TableCell>
+                            <TableCell className={`text-xs font-medium ${compactCls}`} rowSpan={dayEvents.length}>{format(day, "dd.MM")}</TableCell>
+                            <TableCell className={`text-xs text-muted-foreground ${compactCls}`} rowSpan={dayEvents.length}>{DAYS_SHORT[day.getDay()]}</TableCell>
                           </>
                         )}
-                        <TableCell className="text-xs font-medium">{ev.standShort}</TableCell>
-                        <TableCell className="text-xs">{ev.city}</TableCell>
-                        <TableCell className="text-xs text-muted-foreground">{ev.client}</TableCell>
-                        <TableCell className="text-xs text-muted-foreground">{ev.vehicle}</TableCell>
-                        <TableCell>
+                        <TableCell className={`text-xs font-medium ${compactCls}`}>{ev.standShort}</TableCell>
+                        <TableCell className={`text-xs ${compactCls}`}>{ev.city}</TableCell>
+                        <TableCell className={`text-xs text-muted-foreground ${compactCls}`}>{ev.client}</TableCell>
+                        <TableCell className={`text-xs text-muted-foreground ${compactCls}`}>{ev.vehicle}</TableCell>
+                        <TableCell className={compactCls}>
                           <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${
                             ev.status === "completed" ? "bg-emerald-500/20 text-emerald-400" :
                             ev.status === "in-progress" ? "bg-orange-400/20 text-orange-400" :
