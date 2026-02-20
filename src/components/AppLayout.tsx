@@ -15,6 +15,8 @@ import {
   Moon,
   Menu,
   X,
+  PanelLeftOpen,
+  PanelLeftClose,
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useAuth } from "@/contexts/AuthContext";
@@ -58,6 +60,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
   const { theme, toggleTheme } = useTheme();
   const isMobile = useIsMobile();
   const [sidebarOpen, setSidebarOpen] = useState(!isMobile);
+  const [expanded, setExpanded] = useState(false);
   const navigate = useNavigate();
 
   const visibleItems = navItems.filter(
@@ -84,26 +87,29 @@ export default function AppLayout({ children }: AppLayoutProps) {
           )}
         </AnimatePresence>
 
-        {/* Sidebar — icon only */}
+        {/* Sidebar */}
         <AnimatePresence>
           {sidebarOpen && (
             <motion.aside
-              initial={isMobile ? { x: -72 } : { x: 0 }}
-              animate={{ x: 0 }}
-              exit={isMobile ? { x: -72 } : { x: 0 }}
+              initial={isMobile ? { x: expanded ? -220 : -72 } : { x: 0 }}
+              animate={{ x: 0, width: expanded ? 220 : 72 }}
+              exit={isMobile ? { x: expanded ? -220 : -72 } : { x: 0 }}
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
               className={`
                 ${isMobile ? "fixed z-50" : "relative"}
-                flex flex-col w-[72px] min-h-screen
+                flex flex-col min-h-screen
                 bg-sidebar border-r border-sidebar-border
-                items-center
+                ${expanded ? "items-stretch" : "items-center"}
               `}
             >
-              {/* Logo — clickable → dashboard */}
-              <div className="flex items-center justify-center py-4 border-b border-sidebar-border w-full">
-                <button onClick={() => { navigate("/"); closeSidebarOnMobile(); }} className="focus:outline-none">
+              {/* Logo */}
+              <div className={`flex items-center ${expanded ? "gap-3 px-4" : "justify-center"} py-4 border-b border-sidebar-border w-full`}>
+                <button onClick={() => { navigate("/"); closeSidebarOnMobile(); }} className="focus:outline-none shrink-0">
                   <img src={logoHH} alt="Helium House" className="h-10 w-10 rounded-lg object-cover hover:opacity-80 transition-opacity" />
                 </button>
+                {expanded && (
+                  <span className="text-sm font-bold text-sidebar-foreground truncate">Helium House</span>
+                )}
                 {isMobile && (
                   <button onClick={() => setSidebarOpen(false)} className="absolute right-2 top-4 text-muted-foreground hover:text-foreground">
                     <X className="h-4 w-4" />
@@ -111,7 +117,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
                 )}
               </div>
 
-              {/* Nav items — icons only with tooltips */}
+              {/* Nav items */}
               <nav className="flex-1 py-3 px-2 space-y-1 w-full">
                 {visibleItems.map((item) => (
                   <Tooltip key={item.url}>
@@ -119,63 +125,98 @@ export default function AppLayout({ children }: AppLayoutProps) {
                       <NavLink
                         to={item.url}
                         end={item.url === "/"}
-                        className="flex items-center justify-center w-full h-10 rounded-lg text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground transition-colors"
+                        className={`flex items-center ${expanded ? "gap-3 px-3" : "justify-center"} w-full h-10 rounded-lg text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground transition-colors`}
                         activeClassName="bg-sidebar-accent text-sidebar-primary shadow-sm"
                         onClick={closeSidebarOnMobile}
                       >
                         <item.icon className="h-5 w-5 shrink-0" />
+                        {expanded && <span className="text-sm truncate">{item.title}</span>}
                       </NavLink>
                     </TooltipTrigger>
-                    <TooltipContent side="right" sideOffset={8}>
-                      {item.title}
-                    </TooltipContent>
+                    {!expanded && (
+                      <TooltipContent side="right" sideOffset={8}>
+                        {item.title}
+                      </TooltipContent>
+                    )}
                   </Tooltip>
                 ))}
               </nav>
 
               {/* Bottom section */}
               <div className="border-t border-sidebar-border py-3 px-2 space-y-1 w-full">
+                {/* Expand/collapse toggle */}
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      onClick={() => setExpanded(!expanded)}
+                      className={`flex items-center ${expanded ? "gap-3 px-3" : "justify-center"} w-full h-10 rounded-lg text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground transition-colors`}
+                    >
+                      {expanded ? <PanelLeftClose className="h-5 w-5" /> : <PanelLeftOpen className="h-5 w-5" />}
+                      {expanded && <span className="text-sm">{expanded ? "Zwiń pasek" : "Rozwiń pasek"}</span>}
+                    </button>
+                  </TooltipTrigger>
+                  {!expanded && (
+                    <TooltipContent side="right" sideOffset={8}>
+                      Rozwiń pasek
+                    </TooltipContent>
+                  )}
+                </Tooltip>
+
                 {/* Theme toggle */}
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <button
                       onClick={toggleTheme}
-                      className="flex items-center justify-center w-full h-10 rounded-lg text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground transition-colors"
+                      className={`flex items-center ${expanded ? "gap-3 px-3" : "justify-center"} w-full h-10 rounded-lg text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground transition-colors`}
                     >
                       {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+                      {expanded && <span className="text-sm">{theme === "dark" ? "Tryb jasny" : "Tryb ciemny"}</span>}
                     </button>
                   </TooltipTrigger>
-                  <TooltipContent side="right" sideOffset={8}>
-                    {theme === "dark" ? "Tryb jasny" : "Tryb ciemny"}
-                  </TooltipContent>
+                  {!expanded && (
+                    <TooltipContent side="right" sideOffset={8}>
+                      {theme === "dark" ? "Tryb jasny" : "Tryb ciemny"}
+                    </TooltipContent>
+                  )}
                 </Tooltip>
 
                 {/* User avatar + logout */}
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <div className="flex items-center justify-center w-full h-10">
-                      <div className="h-8 w-8 rounded-full gradient-petrol flex items-center justify-center text-xs font-bold text-white">
+                    <div className={`flex items-center ${expanded ? "gap-3 px-3" : "justify-center"} w-full h-10`}>
+                      <div className="h-8 w-8 rounded-full gradient-petrol flex items-center justify-center text-xs font-bold text-white shrink-0">
                         {user?.name?.charAt(0) || "?"}
                       </div>
+                      {expanded && (
+                        <div className="min-w-0">
+                          <p className="text-sm font-medium text-sidebar-foreground truncate">{user?.name}</p>
+                          <p className="text-xs text-muted-foreground capitalize">{user?.role}</p>
+                        </div>
+                      )}
                     </div>
                   </TooltipTrigger>
-                  <TooltipContent side="right" sideOffset={8}>
-                    {user?.name} ({user?.role})
-                  </TooltipContent>
+                  {!expanded && (
+                    <TooltipContent side="right" sideOffset={8}>
+                      {user?.name} ({user?.role})
+                    </TooltipContent>
+                  )}
                 </Tooltip>
 
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <button
                       onClick={logout}
-                      className="flex items-center justify-center w-full h-10 rounded-lg text-sidebar-foreground/70 hover:text-destructive transition-colors"
+                      className={`flex items-center ${expanded ? "gap-3 px-3" : "justify-center"} w-full h-10 rounded-lg text-sidebar-foreground/70 hover:text-destructive transition-colors`}
                     >
                       <LogOut className="h-5 w-5" />
+                      {expanded && <span className="text-sm">Wyloguj</span>}
                     </button>
                   </TooltipTrigger>
-                  <TooltipContent side="right" sideOffset={8}>
-                    Wyloguj
-                  </TooltipContent>
+                  {!expanded && (
+                    <TooltipContent side="right" sideOffset={8}>
+                      Wyloguj
+                    </TooltipContent>
+                  )}
                 </Tooltip>
               </div>
             </motion.aside>

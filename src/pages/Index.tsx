@@ -184,7 +184,8 @@ export default function DashboardPage() {
     const totalDays = differenceInDays(yearEnd, yearStart) + 1;
 
     const result: { date: Date; events: EventTrip[] }[] = [];
-    for (let i = 0; i < totalDays; i++) {
+    // Future on top, past on bottom
+    for (let i = totalDays - 1; i >= 0; i--) {
       const d = addDays(yearStart, i);
       const dateStr = format(d, "yyyy-MM-dd");
       result.push({ date: d, events: getEventsByDate(dateStr) });
