@@ -46,7 +46,7 @@ export default function FleetPage() {
             </div>
             <div className="flex items-center gap-4 text-sm text-muted-foreground">
               <span className="flex items-center gap-1.5"><Calendar className="h-3.5 w-3.5" />{v.trips.length} wyjazdów</span>
-              <span className="flex items-center gap-1.5"><Wrench className="h-3.5 w-3.5" />Serwis: {v.nextService}</span>
+              <span className="flex items-center gap-1.5"><Wrench className="h-3.5 w-3.5" />Serwis: {v.nextService || "—"}</span>
             </div>
           </div>
         ))}

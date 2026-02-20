@@ -2,7 +2,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { mockVehicles } from "@/data/mock-data";
 import { mockEvents } from "@/data/mock-events";
-import { ArrowLeft, Truck as TruckIcon, Wrench, Calendar } from "lucide-react";
+import { ArrowLeft, Truck as TruckIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
@@ -10,13 +10,6 @@ const statusColor: Record<string, string> = {
   "dostępny": "bg-emerald-500/20 text-emerald-400",
   "w trasie": "bg-orange-400/20 text-orange-400",
   "serwis": "bg-destructive/20 text-destructive",
-};
-
-const typeLabel: Record<string, string> = {
-  bus: "Bus",
-  przyczepa: "Przyczepa",
-  autobus: "Autobus",
-  "samochód": "Samochód",
 };
 
 export default function VehicleDetailPage() {
@@ -37,8 +30,21 @@ export default function VehicleDetailPage() {
 
   const vehicleEvents = mockEvents.filter((ev) => vehicle.trips.includes(ev.id));
 
+  const infoRows: { label: string; value: string }[] = [
+    { label: "Nazwa/ID", value: vehicle.name },
+    { label: "Rejestracja", value: vehicle.plate },
+    { label: "Rocznik", value: vehicle.year },
+    { label: "Przebieg (km)", value: vehicle.mileage },
+    { label: "Przegląd do", value: vehicle.inspectionUntil },
+    { label: "Ubezpieczenie do", value: vehicle.insuranceUntil },
+    { label: "Serwis/olej", value: vehicle.serviceOil },
+    { label: "DO NAPRAWY (opis)", value: vehicle.repairDescription },
+    { label: "Status naprawy", value: vehicle.repairStatus },
+    { label: "Uwagi", value: vehicle.notes },
+  ];
+
   return (
-    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6 max-w-4xl">
+    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6 max-w-5xl">
       {/* Header */}
       <div className="flex items-center gap-3">
         <Button variant="ghost" size="icon" onClick={() => navigate("/fleet")}>
@@ -47,21 +53,37 @@ export default function VehicleDetailPage() {
         <TruckIcon className="h-6 w-6 text-foreground" />
         <div>
           <h1 className="text-2xl font-bold">{vehicle.name}</h1>
-          <p className="text-muted-foreground">{typeLabel[vehicle.type]}{vehicle.plate ? ` · ${vehicle.plate}` : ""}</p>
+          <p className="text-muted-foreground">{vehicle.plate || "Brak rejestracji"}</p>
         </div>
         <span className={`text-xs font-medium px-2.5 py-1 rounded-full ml-auto ${statusColor[vehicle.status]}`}>
           {vehicle.status}
         </span>
       </div>
 
-      {/* Info */}
-      <div className="bg-card border border-border rounded-xl p-5 grid grid-cols-2 gap-4 text-sm">
-        <div className="flex items-center gap-2"><Calendar className="h-4 w-4 text-muted-foreground" /> Wyjazdów: {vehicle.trips.length}</div>
-        <div className="flex items-center gap-2"><Wrench className="h-4 w-4 text-muted-foreground" /> Następny serwis: {vehicle.nextService}</div>
-        {vehicle.plate && <div className="flex items-center gap-2"><TruckIcon className="h-4 w-4 text-muted-foreground" /> Rejestracja: {vehicle.plate}</div>}
+      {/* Vehicle info table */}
+      <div>
+        <h2 className="text-lg font-semibold mb-3">Dane pojazdu</h2>
+        <div className="bg-card border border-border rounded-xl overflow-hidden">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                {infoRows.map((r) => (
+                  <TableHead key={r.label}>{r.label}</TableHead>
+                ))}
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              <TableRow>
+                {infoRows.map((r) => (
+                  <TableCell key={r.label}>{r.value || "—"}</TableCell>
+                ))}
+              </TableRow>
+            </TableBody>
+          </Table>
+        </div>
       </div>
 
-      {/* Events table */}
+      {/* Trip history table */}
       <div>
         <h2 className="text-lg font-semibold mb-3">Historia wyjazdów ({vehicleEvents.length})</h2>
         {vehicleEvents.length > 0 ? (
@@ -69,32 +91,27 @@ export default function VehicleDetailPage() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Data</TableHead>
-                  <TableHead>Stoisko</TableHead>
-                  <TableHead>Miasto</TableHead>
-                  <TableHead>Klient</TableHead>
-                  <TableHead>Ekipa</TableHead>
-                  <TableHead>Status</TableHead>
+                  <TableHead>LP</TableHead>
+                  <TableHead>Nazwa eventu</TableHead>
+                  <TableHead>Sklep/Lokalizacja</TableHead>
+                  <TableHead>Długość trasy (km)</TableHead>
+                  <TableHead>Osoby które jechały</TableHead>
+                  <TableHead>Foty licznika start/stop</TableHead>
+                  <TableHead>Foty tankowanie</TableHead>
+                  <TableHead>Uwagi</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {vehicleEvents.map((ev) => (
+                {vehicleEvents.map((ev, idx) => (
                   <TableRow key={ev.id} className="cursor-pointer hover:bg-accent/30" onClick={() => navigate(`/events/${ev.id}`)}>
-                    <TableCell className="font-medium">{ev.date}</TableCell>
-                    <TableCell>{ev.standShort}</TableCell>
-                    <TableCell>{ev.city}</TableCell>
-                    <TableCell className="text-muted-foreground">{ev.client}</TableCell>
-                    <TableCell className="text-muted-foreground">{ev.crew.join(", ")}</TableCell>
-                    <TableCell>
-                      <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${
-                        ev.status === "completed" ? "bg-emerald-500/20 text-emerald-400" :
-                        ev.status === "in-progress" ? "bg-orange-400/20 text-orange-400" :
-                        ev.status === "cancelled" ? "bg-destructive/20 text-destructive" :
-                        "bg-sky-400/20 text-sky-400"
-                      }`}>
-                        {ev.status === "planned" ? "Zaplanowany" : ev.status === "in-progress" ? "W trakcie" : ev.status === "completed" ? "Zakończony" : "Anulowany"}
-                      </span>
-                    </TableCell>
+                    <TableCell>{idx + 1}</TableCell>
+                    <TableCell className="font-medium">{ev.eventName || `${ev.date} ${ev.standShort} ${ev.city}`}</TableCell>
+                    <TableCell>{ev.shopLocation || ev.city || "—"}</TableCell>
+                    <TableCell>{ev.routeLength || "—"}</TableCell>
+                    <TableCell className="text-muted-foreground">{ev.crew.length ? ev.crew.join(", ") : "—"}</TableCell>
+                    <TableCell>{ev.photos.length ? ev.photos.join(", ") : "—"}</TableCell>
+                    <TableCell>{ev.fuelPhotos.length ? ev.fuelPhotos.join(", ") : "—"}</TableCell>
+                    <TableCell>{ev.notes || "—"}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
