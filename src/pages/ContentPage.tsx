@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { mockBrandContent } from "@/data/mock-data";
-import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { TableBody, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { AdminTable } from "@/components/AdminTable";
 import { Download } from "lucide-react";
 import { EditableCell } from "@/components/EditableCell";
 
@@ -10,7 +11,7 @@ export default function ContentPage() {
       <h1 className="text-2xl font-bold">Kontenty</h1>
       <p className="text-sm text-muted-foreground">Spis kontentów wideo marek do monitorów (pion / poziom)</p>
       <div className="bg-card border border-border rounded-xl overflow-hidden">
-        <Table className="admin-table">
+        <AdminTable>
           <TableHeader>
             <TableRow>
               <TableHead>LP</TableHead>
@@ -46,7 +47,7 @@ export default function ContentPage() {
               </TableRow>
             ))}
           </TableBody>
-        </Table>
+        </AdminTable>
       </div>
     </motion.div>
   );

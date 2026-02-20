@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { mockTesters } from "@/data/mock-data";
-import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { TableBody, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { AdminTable } from "@/components/AdminTable";
 import { EditableCell } from "@/components/EditableCell";
 
 const statusColor: Record<string, string> = {
@@ -22,7 +23,7 @@ export default function TestersPage() {
           <div key={cat} className="space-y-3">
             <h2 className="text-lg font-semibold text-foreground/80">{cat}</h2>
             <div className="bg-card border border-border rounded-xl overflow-hidden">
-              <Table className="admin-table">
+              <AdminTable>
                 <TableHeader>
                   <TableRow>
                     <TableHead className="w-10">LP</TableHead>
@@ -53,7 +54,7 @@ export default function TestersPage() {
                     </TableRow>
                   ))}
                 </TableBody>
-              </Table>
+              </AdminTable>
             </div>
           </div>
         );
