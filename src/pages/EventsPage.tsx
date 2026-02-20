@@ -3,13 +3,13 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { mockEvents, type EventTrip } from "@/data/mock-events";
 import { useAuth } from "@/contexts/AuthContext";
-import { Clock, Users, Truck as TruckIcon, ChevronRight, Plus, Download, Upload } from "lucide-react";
+import { ChevronRight, Plus, Download, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Table, TableBody, TableRow, TableHead, TableHeader } from "@/components/ui/table";
 import { EditableCell } from "@/components/EditableCell";
 import { AdminTable } from "@/components/AdminTable";
-import { Input } from "@/components/ui/input";
+
 
 function statusLabel(s: EventTrip["status"]) {
   switch (s) {
@@ -47,40 +47,37 @@ const eventFields: { key: keyof EventTrip; label: string }[] = [
   { key: "notes", label: "Uwagi" },
 ];
 
-function EmptyEventForm({ title }: { title: string }) {
+function EmptyEventForm() {
   return (
-    <div className="space-y-2">
-      <h3 className="font-semibold text-sm text-muted-foreground">{title}</h3>
-      <div className="bg-card border border-border rounded-lg overflow-hidden">
-        <AdminTable>
-          <TableBody>
-            {eventFields.map((f) => (
-              <TableRow key={f.key}>
-                <EditableCell
-                  value={f.label}
-                  className="font-medium text-muted-foreground w-[180px] whitespace-nowrap text-sm py-2 px-3"
-                />
-                <EditableCell
-                  value=""
-                  className="text-sm py-2 px-3"
-                />
-              </TableRow>
-            ))}
-            <TableRow>
-              <EditableCell value="Marki" className="font-medium text-muted-foreground w-[180px] text-sm py-2 px-3" />
-              <EditableCell value="" className="text-sm py-2 px-3" />
+    <div className="bg-card border border-border rounded-lg overflow-hidden">
+      <AdminTable>
+        <TableBody>
+          {eventFields.map((f) => (
+            <TableRow key={f.key}>
+              <EditableCell
+                value={f.label}
+                className="font-medium text-muted-foreground w-[180px] whitespace-nowrap text-sm py-2 px-3"
+              />
+              <EditableCell
+                value=""
+                className="text-sm py-2 px-3"
+              />
             </TableRow>
-            <TableRow>
-              <EditableCell value="Testery" className="font-medium text-muted-foreground w-[180px] text-sm py-2 px-3" />
-              <EditableCell value="" className="text-sm py-2 px-3" />
-            </TableRow>
-            <TableRow>
-              <EditableCell value="Ekipa" className="font-medium text-muted-foreground w-[180px] text-sm py-2 px-3" />
-              <EditableCell value="" className="text-sm py-2 px-3" />
-            </TableRow>
-          </TableBody>
-        </AdminTable>
-      </div>
+          ))}
+          <TableRow>
+            <EditableCell value="Marki" className="font-medium text-muted-foreground w-[180px] text-sm py-2 px-3" />
+            <EditableCell value="" className="text-sm py-2 px-3" />
+          </TableRow>
+          <TableRow>
+            <EditableCell value="Testery" className="font-medium text-muted-foreground w-[180px] text-sm py-2 px-3" />
+            <EditableCell value="" className="text-sm py-2 px-3" />
+          </TableRow>
+          <TableRow>
+            <EditableCell value="Ekipa" className="font-medium text-muted-foreground w-[180px] text-sm py-2 px-3" />
+            <EditableCell value="" className="text-sm py-2 px-3" />
+          </TableRow>
+        </TableBody>
+      </AdminTable>
     </div>
   );
 }
@@ -140,12 +137,12 @@ export default function EventsPage() {
             <Button onClick={() => setShowAddDialog(true)} className="gap-1.5">
               <Plus className="h-4 w-4" /> Dodaj event
             </Button>
-            <Button variant="outline" onClick={handleExport} className="gap-1.5">
-              <Download className="h-4 w-4" /> Eksportuj
+      <Button variant="outline" onClick={handleExport} className="gap-1.5">
+              <Upload className="h-4 w-4" /> Eksportuj
             </Button>
             <Button variant="outline" asChild className="gap-1.5 cursor-pointer">
               <label>
-                <Upload className="h-4 w-4" /> Importuj
+                <Download className="h-4 w-4" /> Importuj
                 <input type="file" accept=".tsv,.csv,.txt,.xlsx" onChange={handleImport} className="hidden" />
               </label>
             </Button>
@@ -153,44 +150,56 @@ export default function EventsPage() {
         )}
       </div>
 
-      <div className="grid gap-3">
-        {mockEvents.map((ev) => (
-          <button
-            key={ev.id}
-            onClick={() => navigate(`/events/${ev.id}`)}
-            className="bg-card border border-border rounded-xl p-4 flex flex-col sm:flex-row sm:items-center gap-3 text-left hover:border-primary/40 hover:bg-accent/30 transition-colors group w-full"
-          >
-            <div className="flex items-center gap-3 flex-1 min-w-0">
-              <TruckIcon className="h-5 w-5 text-foreground shrink-0" />
-              <div className="min-w-0">
-                <p className="font-semibold text-foreground">{ev.date} — {ev.standShort}</p>
-                <p className="text-sm text-muted-foreground">{ev.client}</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-4 text-sm text-muted-foreground flex-wrap">
-              <span className="flex items-center gap-1"><Clock className="h-3.5 w-3.5" />{ev.time}</span>
-              <span className="flex items-center gap-1"><TruckIcon className="h-3.5 w-3.5" />{ev.vehicle.split("(")[0].trim()}</span>
-              <span className="flex items-center gap-1"><Users className="h-3.5 w-3.5" />{ev.crew.join(", ")}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className={`text-xs font-medium px-2.5 py-1 rounded-full whitespace-nowrap ${statusClass(ev.status)}`}>
-                {statusLabel(ev.status)}
-              </span>
-              <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-foreground transition-colors" />
-            </div>
-          </button>
-        ))}
+      <div className="bg-card border border-border rounded-xl overflow-hidden">
+        <AdminTable>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Data</TableHead>
+              <TableHead>Rodzaj</TableHead>
+              <TableHead>Samochód</TableHead>
+              <TableHead>Ekipa</TableHead>
+              <TableHead>Testery</TableHead>
+              <TableHead>Godzina</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead className="w-8"></TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {mockEvents.map((ev) => (
+              <TableRow
+                key={ev.id}
+                className="cursor-pointer hover:bg-accent/30"
+                onClick={() => navigate(`/events/${ev.id}`)}
+              >
+                <EditableCell value={ev.date} className="whitespace-nowrap" />
+                <EditableCell value={ev.standShort} />
+                <EditableCell value={ev.vehicle.split("(")[0].trim()} />
+                <EditableCell value={ev.crew.join(", ")} />
+                <EditableCell value={ev.testers?.join(", ") || "—"} />
+                <EditableCell value={ev.time} />
+                <td className="p-2">
+                  <span className={`text-xs font-medium px-2.5 py-1 rounded-full whitespace-nowrap ${statusClass(ev.status)}`}>
+                    {statusLabel(ev.status)}
+                  </span>
+                </td>
+                <td className="p-2">
+                  <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                </td>
+              </TableRow>
+            ))}
+          </TableBody>
+        </AdminTable>
       </div>
 
       {/* Add Event Dialog – dual form (montaż + demontaż) */}
       <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
-        <DialogContent className="max-w-4xl max-h-[85vh] overflow-y-auto">
+        <DialogContent className="max-w-4xl overflow-visible [&>button]:hidden">
           <DialogHeader>
-            <DialogTitle>Dodaj event (montaż + demontaż)</DialogTitle>
+            <DialogTitle>Dodaj event</DialogTitle>
           </DialogHeader>
           <div className="grid md:grid-cols-2 gap-6">
-            <EmptyEventForm title="Montaż" />
-            <EmptyEventForm title="Demontaż" />
+            <EmptyEventForm />
+            <EmptyEventForm />
           </div>
           <div className="flex justify-end gap-2 pt-4">
             <Button variant="outline" onClick={() => setShowAddDialog(false)}>Anuluj</Button>
