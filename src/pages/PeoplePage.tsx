@@ -1,40 +1,65 @@
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { mockPeople } from "@/data/mock-data";
-import { Phone, Mail, MapPin, Car, Shield } from "lucide-react";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Key, Car, Shield, ChevronRight } from "lucide-react";
 
 export default function PeoplePage() {
+  const navigate = useNavigate();
+
   return (
     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
       <h1 className="text-2xl font-bold">Ludzie</h1>
-      <div className="grid gap-3 sm:grid-cols-2">
-        {mockPeople.map((p) => (
-          <div key={p.id} className="bg-card border border-border rounded-xl p-5 space-y-3">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-full gradient-petrol flex items-center justify-center text-sm font-bold text-white">
-                  {p.firstName.charAt(0)}{p.lastName.charAt(0)}
-                </div>
-                <div>
-                  <p className="font-semibold text-foreground">{p.name}</p>
-                  <div className="flex items-center gap-2">
-                    {p.isAdmin && (
-                      <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400">Admin</span>
-                    )}
-                    {p.drivingLicense && (
-                      <span className="text-xs text-muted-foreground">kat. {p.drivingLicense}</span>
-                    )}
+      <div className="bg-card border border-border rounded-xl overflow-hidden">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Imię i nazwisko</TableHead>
+              <TableHead>Telefon</TableHead>
+              <TableHead>Miasto</TableHead>
+              <TableHead>Prawo jazdy</TableHead>
+              <TableHead className="text-center">Klucze</TableHead>
+              <TableHead className="text-center">Admin</TableHead>
+              <TableHead className="text-center">Wyjazdy</TableHead>
+              <TableHead className="w-8"></TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {mockPeople.map((p) => (
+              <TableRow
+                key={p.id}
+                className="cursor-pointer hover:bg-accent/30"
+                onClick={() => navigate(`/people/${p.id}`)}
+              >
+                <TableCell>
+                  <div className="flex items-center gap-2.5">
+                    <div className="h-8 w-8 rounded-full gradient-petrol flex items-center justify-center text-xs font-bold text-white shrink-0">
+                      {p.firstName.charAt(0)}{p.lastName.charAt(0)}
+                    </div>
+                    <span className="font-medium">{p.name}</span>
                   </div>
-                </div>
-              </div>
-            </div>
-            <div className="space-y-1.5 text-sm text-muted-foreground">
-              {p.phone && <p className="flex items-center gap-2"><Phone className="h-3.5 w-3.5" />{p.phone}</p>}
-              {p.email && <p className="flex items-center gap-2"><Mail className="h-3.5 w-3.5" />{p.email}</p>}
-              {p.city && <p className="flex items-center gap-2"><MapPin className="h-3.5 w-3.5" />{p.city}</p>}
-              <p className="flex items-center gap-2"><Car className="h-3.5 w-3.5" />{p.trips.length} wyjazdów</p>
-            </div>
-          </div>
-        ))}
+                </TableCell>
+                <TableCell className="text-muted-foreground">{p.phone || "—"}</TableCell>
+                <TableCell className="text-muted-foreground">{p.city || "—"}</TableCell>
+                <TableCell className="text-muted-foreground">{p.drivingLicense || "—"}</TableCell>
+                <TableCell className="text-center">
+                  {p.hasKeys && <Key className="h-4 w-4 text-warning mx-auto" />}
+                </TableCell>
+                <TableCell className="text-center">
+                  {p.isAdmin && <Shield className="h-4 w-4 text-emerald-400 mx-auto" />}
+                </TableCell>
+                <TableCell className="text-center">
+                  <span className="flex items-center justify-center gap-1 text-muted-foreground">
+                    <Car className="h-3.5 w-3.5" />{p.trips.length}
+                  </span>
+                </TableCell>
+                <TableCell>
+                  <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
       </div>
     </motion.div>
   );

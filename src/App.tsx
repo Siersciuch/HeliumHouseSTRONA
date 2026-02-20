@@ -14,9 +14,11 @@ import PeoplePage from "@/pages/PeoplePage";
 import FleetPage from "@/pages/FleetPage";
 import TestersPage from "@/pages/TestersPage";
 import StandsPage from "@/pages/StandsPage";
+import StandDetailPage from "@/pages/StandDetailPage";
 import ContentPage from "@/pages/ContentPage";
 import KnowledgePage from "@/pages/KnowledgePage";
 import SchedulePage from "@/pages/SchedulePage";
+import PersonDetailPage from "@/pages/PersonDetailPage";
 import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -42,9 +44,11 @@ function AppRoutes() {
       <Route path="/events" element={<ProtectedRoute><EventsPage /></ProtectedRoute>} />
       <Route path="/events/:id" element={<ProtectedRoute><EventDetailPage /></ProtectedRoute>} />
       <Route path="/people" element={<ProtectedRoute><PeoplePage /></ProtectedRoute>} />
+      <Route path="/people/:id" element={<ProtectedRoute><PersonDetailPage /></ProtectedRoute>} />
       <Route path="/fleet" element={<ProtectedRoute><FleetPage /></ProtectedRoute>} />
       <Route path="/testers" element={<ProtectedRoute><TestersPage /></ProtectedRoute>} />
       <Route path="/stands" element={<ProtectedRoute><StandsPage /></ProtectedRoute>} />
+      <Route path="/stands/:id" element={<ProtectedRoute><StandDetailPage /></ProtectedRoute>} />
       <Route path="/content" element={<ProtectedRoute><ContentPage /></ProtectedRoute>} />
       <Route path="/knowledge" element={<ProtectedRoute><KnowledgePage /></ProtectedRoute>} />
       <Route path="/schedule" element={<ProtectedRoute><SchedulePage /></ProtectedRoute>} />
