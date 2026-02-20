@@ -49,18 +49,18 @@ function BusChip({ event, onClick }: BusChipProps) {
     <button
       onClick={onClick}
       className="relative hover:scale-105 hover:shadow-glow transition-all group"
-      style={{ width: 120, height: 52 }}
+      style={{ width: 240, height: 104 }}
     >
       {/* Bus image */}
       <img src={busImage} alt="Bus" className="w-full h-full object-contain" />
       {/* Text overlay on the bus body */}
       <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none" style={{ paddingBottom: 6 }}>
-        <span className="text-[11px] font-bold leading-tight text-gray-800 drop-shadow-sm">{event.standShort}</span>
-        <span className="text-[9px] leading-tight text-gray-600 drop-shadow-sm">{event.city}</span>
+        <span className="text-base font-bold leading-tight text-gray-800 drop-shadow-sm">{event.standShort}</span>
+        <span className="text-sm leading-tight text-gray-600 drop-shadow-sm">{event.city}</span>
       </div>
       {/* Trailer badge */}
       {event.hasTrailer && (
-        <span className="absolute -top-1 -right-1 text-[8px] font-bold bg-primary text-primary-foreground rounded px-1 py-0.5 shadow">+P</span>
+        <span className="absolute -top-1.5 -right-1.5 text-xs font-bold bg-primary text-primary-foreground rounded px-1.5 py-0.5 shadow">+P</span>
       )}
     </button>
   );

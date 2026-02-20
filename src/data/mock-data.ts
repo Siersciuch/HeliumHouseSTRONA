@@ -53,20 +53,28 @@ export interface Vehicle {
   plate: string;
   type: "bus" | "przyczepa" | "autobus" | "samochód";
   status: "dostępny" | "w trasie" | "serwis";
+  year: string;
+  mileage: string;
+  inspectionUntil: string;
+  insuranceUntil: string;
+  serviceOil: string;
+  repairDescription: string;
+  repairStatus: string;
+  notes: string;
   nextService: string;
   trips: string[];
 }
 
 export const mockVehicles: Vehicle[] = [
-  { id: "v1", name: "Fiat Ducato 3,5t", plate: "WZ 448HF", type: "bus", status: "w trasie", nextService: format(addDays(today, 30), "yyyy-MM-dd"), trips: ["ev1", "ev3", "ev6"] },
-  { id: "v2", name: "Fiat Ducato 3,5t", plate: "WZ 449HF", type: "bus", status: "w trasie", nextService: format(addDays(today, 45), "yyyy-MM-dd"), trips: ["ev2", "ev5"] },
-  { id: "v3", name: "Fiat Ducato 3,5t", plate: "WZ 314HG", type: "bus", status: "dostępny", nextService: format(addDays(today, 15), "yyyy-MM-dd"), trips: ["ev4", "ev7"] },
-  { id: "v4", name: "Renault Master 3,5t", plate: "WW 418GR", type: "bus", status: "dostępny", nextService: format(addDays(today, 60), "yyyy-MM-dd"), trips: ["ev1"] },
-  { id: "v5", name: "Iveco 7,2t", plate: "WZ 325HF", type: "bus", status: "dostępny", nextService: format(addDays(today, 20), "yyyy-MM-dd"), trips: ["ev5"] },
-  { id: "v6", name: "Skoda", plate: "", type: "samochód", status: "dostępny", nextService: format(addDays(today, 90), "yyyy-MM-dd"), trips: [] },
-  { id: "v7", name: "Autobus", plate: "", type: "autobus", status: "serwis", nextService: format(addDays(today, 10), "yyyy-MM-dd"), trips: ["ev7"] },
-  { id: "v8", name: "Duża Przyczepa", plate: "", type: "przyczepa", status: "dostępny", nextService: format(addDays(today, 50), "yyyy-MM-dd"), trips: ["ev1", "ev3"] },
-  { id: "v9", name: "Przyczepa", plate: "", type: "przyczepa", status: "w trasie", nextService: format(addDays(today, 40), "yyyy-MM-dd"), trips: ["ev2", "ev6"] },
+  { id: "v1", name: "Fiat Ducato 3,5t", plate: "WZ 448HF", type: "bus", status: "w trasie", year: "", mileage: "", inspectionUntil: "", insuranceUntil: "", serviceOil: "", repairDescription: "", repairStatus: "", notes: "", nextService: "", trips: ["ev1", "ev3", "ev6"] },
+  { id: "v2", name: "Fiat Ducato 3,5t", plate: "WZ 449HF", type: "bus", status: "w trasie", year: "", mileage: "", inspectionUntil: "", insuranceUntil: "", serviceOil: "", repairDescription: "", repairStatus: "", notes: "", nextService: "", trips: ["ev2", "ev5"] },
+  { id: "v3", name: "Fiat Ducato 3,5t", plate: "WZ 314HG", type: "bus", status: "dostępny", year: "", mileage: "", inspectionUntil: "", insuranceUntil: "", serviceOil: "", repairDescription: "", repairStatus: "", notes: "", nextService: "", trips: ["ev4", "ev7"] },
+  { id: "v4", name: "Renault Master 3,5t", plate: "WW 418GR", type: "bus", status: "dostępny", year: "", mileage: "", inspectionUntil: "", insuranceUntil: "", serviceOil: "", repairDescription: "", repairStatus: "", notes: "", nextService: "", trips: ["ev1"] },
+  { id: "v5", name: "Iveco 7,2t", plate: "WZ 325HF", type: "bus", status: "dostępny", year: "", mileage: "", inspectionUntil: "", insuranceUntil: "", serviceOil: "", repairDescription: "", repairStatus: "", notes: "", nextService: "", trips: ["ev5"] },
+  { id: "v6", name: "Skoda", plate: "", type: "samochód", status: "dostępny", year: "", mileage: "", inspectionUntil: "", insuranceUntil: "", serviceOil: "", repairDescription: "", repairStatus: "", notes: "", nextService: "", trips: [] },
+  { id: "v7", name: "Autobus", plate: "", type: "autobus", status: "serwis", year: "", mileage: "", inspectionUntil: "", insuranceUntil: "", serviceOil: "", repairDescription: "", repairStatus: "", notes: "", nextService: "", trips: ["ev7"] },
+  { id: "v8", name: "Duża Przyczepa", plate: "", type: "przyczepa", status: "dostępny", year: "", mileage: "", inspectionUntil: "", insuranceUntil: "", serviceOil: "", repairDescription: "", repairStatus: "", notes: "", nextService: "", trips: ["ev1", "ev3"] },
+  { id: "v9", name: "Przyczepa", plate: "", type: "przyczepa", status: "w trasie", year: "", mileage: "", inspectionUntil: "", insuranceUntil: "", serviceOil: "", repairDescription: "", repairStatus: "", notes: "", nextService: "", trips: ["ev2", "ev6"] },
 ];
 
 // ─── Testers (Magazyn testerów) ───
