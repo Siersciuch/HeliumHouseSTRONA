@@ -71,7 +71,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
   const effectiveRole = isImpersonating ? "crew" : user?.role;
 
   const visibleItems = navItems.filter(
-    (item) => !item.adminOnly || effectiveRole === "admin" || isImpersonating
+    (item) => !item.adminOnly || user?.role === "admin"
   );
 
   const closeSidebarOnMobile = () => {
