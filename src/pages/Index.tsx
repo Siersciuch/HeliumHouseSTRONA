@@ -1,5 +1,5 @@
 import React, { useMemo, useRef, useEffect } from "react";
-import { addDays, format, isToday, getDay, startOfYear, endOfYear, differenceInDays } from "date-fns";
+import { addDays, format, isToday, isTomorrow, isYesterday, getDay, startOfYear, endOfYear, differenceInDays } from "date-fns";
 import { pl } from "date-fns/locale";
 import { motion } from "framer-motion";
 import { getEventsByDate, type EventTrip } from "@/data/mock-events";
@@ -7,15 +7,22 @@ import { Truck as TruckIcon, ArrowRight } from "lucide-react";
 
 const DAYS_PL = ["Niedziela", "Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek", "Sobota"];
 
-type TileSize = "large" | "medium" | "small";
+function isDayAfterTomorrow(date: Date): boolean {
+  const dat = addDays(new Date(), 2);
+  return format(date, "yyyy-MM-dd") === format(dat, "yyyy-MM-dd");
+}
+
+type TileSize = "large" | "small";
 
 function getTileSize(date: Date): TileSize {
-  if (isToday(date)) return "large";
+  if (isToday(date) || isTomorrow(date) || isDayAfterTomorrow(date)) return "large";
   return "small";
 }
 
 function getTileBgClass(date: Date): string {
+  if (isYesterday(date)) return "border-muted-foreground/20 bg-muted/60";
   if (isToday(date)) return "border-success/50 bg-success/10";
+  if (isTomorrow(date) || isDayAfterTomorrow(date)) return "border-warning/40 bg-warning/10";
   return "border-border/40 bg-card/50";
 }
 
@@ -63,19 +70,25 @@ function DayTile({ date, size, events, onSelectEvent }: DayTileProps) {
   const monthName = format(date, "LLLL", { locale: pl });
   const dayName = DAYS_PL[getDay(date)];
 
-  const minH = size === "large" ? "min-h-[140px]" : "min-h-[60px]";
-  const padding = size === "large" ? "p-4" : "p-3";
+  const minH = size === "large" ? "min-h-[120px]" : "min-h-[52px]";
+  const padding = size === "large" ? "p-4" : "p-2.5 px-3";
 
   return (
     <div className={`rounded-xl border ${bgClass} ${minH} ${padding} transition-all`}>
-      <div className="flex items-baseline gap-3 mb-2">
-        <span className={`font-bold ${size === "large" ? "text-2xl" : "text-lg"}`}>
+      <div className="flex items-baseline gap-3 mb-1.5">
+        <span className={`font-bold ${size === "large" ? "text-2xl" : "text-base"}`}>
           {dayNum}
         </span>
-        <span className="text-sm text-muted-foreground">{monthName}</span>
+        <span className={`text-muted-foreground ${size === "large" ? "text-sm" : "text-xs"}`}>{monthName}</span>
         <span className="text-xs text-muted-foreground/60">{dayName}</span>
         {isToday(date) && (
           <span className="text-[10px] font-semibold bg-success/20 text-success rounded-full px-2 py-0.5">DZIŚ</span>
+        )}
+        {isTomorrow(date) && (
+          <span className="text-[10px] font-semibold bg-warning/20 text-warning rounded-full px-2 py-0.5">JUTRO</span>
+        )}
+        {isDayAfterTomorrow(date) && (
+          <span className="text-[10px] font-semibold bg-warning/20 text-warning rounded-full px-2 py-0.5">POJUTRZE</span>
         )}
       </div>
 
@@ -86,7 +99,7 @@ function DayTile({ date, size, events, onSelectEvent }: DayTileProps) {
           ))}
         </div>
       ) : (
-        <p className="text-xs text-muted-foreground/40 italic">Brak wyjazdów</p>
+        size === "large" && <p className="text-xs text-muted-foreground/40 italic">Brak wyjazdów</p>
       )}
     </div>
   );
@@ -163,7 +176,7 @@ export default function DashboardPage() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const todayRef = useRef<HTMLDivElement>(null);
 
-  // Full year: Dec 31 on top → Jan 1 on bottom (reversed so future is up)
+  // Full year: Jan 1 on top → Dec 31 on bottom
   const days = useMemo(() => {
     const now = new Date();
     const yearStart = startOfYear(now);
@@ -171,8 +184,7 @@ export default function DashboardPage() {
     const totalDays = differenceInDays(yearEnd, yearStart) + 1;
 
     const result: { date: Date; events: EventTrip[] }[] = [];
-    // Build from Dec 31 down to Jan 1
-    for (let i = totalDays - 1; i >= 0; i--) {
+    for (let i = 0; i < totalDays; i++) {
       const d = addDays(yearStart, i);
       const dateStr = format(d, "yyyy-MM-dd");
       result.push({ date: d, events: getEventsByDate(dateStr) });
@@ -192,10 +204,9 @@ export default function DashboardPage() {
       {/* Calendar tiles — 3/4 */}
       <div
         ref={scrollRef}
-        className="w-3/4 overflow-y-auto pr-2 space-y-2"
+        className="w-3/4 overflow-y-auto pr-2 space-y-1.5"
         style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
       >
-        <style>{`.hide-scrollbar::-webkit-scrollbar { display: none; }`}</style>
         <h1 className="text-xl font-bold sticky top-0 bg-background/80 backdrop-blur-sm py-2 z-10">Kalendarz</h1>
         {days.map(({ date, events }) => (
           <div key={format(date, "yyyy-MM-dd")} ref={isToday(date) ? todayRef : undefined}>
