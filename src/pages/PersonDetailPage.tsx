@@ -138,8 +138,8 @@ export default function PersonDetailPage() {
         return (
           <div key={bm.label} className="space-y-2">
             <h2 className="text-lg font-semibold">{bm.label} {year}</h2>
-            <div className="bg-card border border-border rounded-xl overflow-hidden">
-              <AdminTable>
+            <div className="bg-card border border-border rounded-xl overflow-hidden overflow-y-visible">
+              <AdminTable className="billing-table">
                 <TableHeader>
                   <TableRow>
                     <TableHead className="w-16">Data</TableHead>

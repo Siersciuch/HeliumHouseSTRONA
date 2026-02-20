@@ -69,7 +69,7 @@ export function AdminTable({ children, className }: AdminTableProps) {
   // After render, inject resize handles for admin
   const injectHandles = useCallback((el: HTMLTableElement | null) => {
     (tableRef as React.MutableRefObject<HTMLTableElement | null>).current = el;
-    if (!el || !isAdmin) return;
+    if (!el) return;
 
     // Remove old handles
     el.querySelectorAll(".col-resize-handle, .row-resize-handle").forEach((h) => h.remove());
@@ -97,7 +97,7 @@ export function AdminTable({ children, className }: AdminTableProps) {
       (row as HTMLElement).style.position = "relative";
       row.appendChild(handle);
     });
-  }, [isAdmin, handleColResizeStart, handleRowResizeStart]);
+  }, [handleColResizeStart, handleRowResizeStart]);
 
   // Row click handler for selection
   const handleTableClick = useCallback((e: React.MouseEvent) => {
