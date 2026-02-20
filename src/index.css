@@ -174,6 +174,27 @@
 .animate-twinkle { animation: twinkle var(--tw-animate-duration, 4s) ease-in-out infinite; }
 .animate-shooting-star { animation: shooting-star 14s ease-in-out infinite; }
 
+/* Nebula drift animations */
+@keyframes nebula-drift-1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(40px, 30px) scale(1.08); }
+  66% { transform: translate(-20px, 50px) scale(0.95); }
+}
+@keyframes nebula-drift-2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  25% { transform: translate(-30px, -20px) scale(1.05); }
+  50% { transform: translate(20px, -40px) scale(1.1); }
+  75% { transform: translate(40px, 20px) scale(0.97); }
+}
+@keyframes nebula-drift-3 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-15px, -60px) scale(1.06); }
+}
+
+.animate-nebula-1 { animation: nebula-drift-1 35s ease-in-out infinite; }
+.animate-nebula-2 { animation: nebula-drift-2 45s ease-in-out infinite; }
+.animate-nebula-3 { animation: nebula-drift-3 30s ease-in-out infinite; }
+
 /* Hover Utilities */
 .hover-levitate {
   transition: transform 0.3s cubic-bezier(.4,0,.2,1), box-shadow 0.3s cubic-bezier(.4,0,.2,1);
