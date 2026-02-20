@@ -50,6 +50,19 @@ export default function PersonDetailPage() {
     );
   }
 
+  // Non-admin users can only view their own profile
+  const canView = isAdmin || user?.name === person.name;
+  if (!canView) {
+    return (
+      <div className="flex flex-col items-center justify-center py-20 gap-4">
+        <p className="text-muted-foreground">Nie masz dostępu do tego profilu.</p>
+        <Button variant="outline" onClick={() => navigate("/people")}>
+          <ArrowLeft className="h-4 w-4 mr-2" /> Wróć do listy
+        </Button>
+      </div>
+    );
+  }
+
   const personEvents = mockEvents.filter((ev) => person.trips.includes(ev.id));
   const year = new Date().getFullYear();
   const compactMonths = ["Marzec", "Kwiecień"];

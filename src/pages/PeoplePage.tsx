@@ -39,12 +39,15 @@ export default function PeoplePage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {mockPeople.map((p, index) => (
+              {mockPeople.map((p, index) => {
+                const canAccess = isAdmin || user?.name === p.name;
+                return (
                 <TableRow
                   key={p.id}
-                  className="cursor-pointer hover:bg-accent/30"
+                  className={canAccess ? "cursor-pointer hover:bg-accent/30" : "opacity-60"}
                   onDoubleClick={(e) => {
                     if ((e.target as HTMLElement).tagName === "INPUT") return;
+                    if (!canAccess) return;
                     navigate(`/people/${p.id}`);
                   }}
                 >
@@ -74,10 +77,11 @@ export default function PeoplePage() {
                     {p.isAdmin ? <Shield className="h-4 w-4 text-emerald-400 mx-auto" /> : <X className="h-4 w-4 text-muted-foreground/30 mx-auto" />}
                   </EditableCell>
                   <TableCell>
-                    <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                    {canAccess && <ChevronRight className="h-4 w-4 text-muted-foreground" />}
                   </TableCell>
                 </TableRow>
-              ))}
+                );
+              })}
             </TableBody>
           </AdminTable>
         </div>
