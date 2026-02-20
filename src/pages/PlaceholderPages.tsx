@@ -17,3 +17,4 @@ export const TestersPage = placeholder("Testery", "Sprzęt testowy");
 export const StandsPage = placeholder("Stoiska", "Katalog stoisk");
 export const KnowledgePage = placeholder("Baza Wiedzy", "Dokumentacja i materiały");
 export const SchedulePage = placeholder("Grafik", "Harmonogram pracy");
+export const ContentPage = placeholder("Kontenty", "Zarządzanie treściami eventowymi");

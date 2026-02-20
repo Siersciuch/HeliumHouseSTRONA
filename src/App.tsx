@@ -8,7 +8,7 @@ import { ThemeProvider } from "@/contexts/ThemeContext";
 import AppLayout from "@/components/AppLayout";
 import LoginPage from "@/pages/LoginPage";
 import Index from "@/pages/Index";
-import { EventsPage, PeoplePage, FleetPage, TestersPage, StandsPage, KnowledgePage, SchedulePage } from "@/pages/PlaceholderPages";
+import { EventsPage, PeoplePage, FleetPage, TestersPage, StandsPage, KnowledgePage, SchedulePage, ContentPage } from "@/pages/PlaceholderPages";
 import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -36,6 +36,7 @@ function AppRoutes() {
       <Route path="/fleet" element={<ProtectedRoute><FleetPage /></ProtectedRoute>} />
       <Route path="/testers" element={<ProtectedRoute><TestersPage /></ProtectedRoute>} />
       <Route path="/stands" element={<ProtectedRoute><StandsPage /></ProtectedRoute>} />
+      <Route path="/content" element={<ProtectedRoute><ContentPage /></ProtectedRoute>} />
       <Route path="/knowledge" element={<ProtectedRoute><KnowledgePage /></ProtectedRoute>} />
       <Route path="/schedule" element={<ProtectedRoute><SchedulePage /></ProtectedRoute>} />
       <Route path="*" element={<NotFound />} />
