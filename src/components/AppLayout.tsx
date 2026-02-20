@@ -1,6 +1,7 @@
 import { useState } from "react";
 import {
   LayoutDashboard,
+  FileText,
   Calendar,
   Users,
   Truck,
@@ -36,6 +37,7 @@ const navItems: NavItem[] = [
   { title: "Flota", url: "/fleet", icon: Truck },
   { title: "Testery", url: "/testers", icon: FlaskConical },
   { title: "Stoiska", url: "/stands", icon: Store },
+  { title: "Kontenty", url: "/content", icon: FileText },
   { title: "Baza Wiedzy", url: "/knowledge", icon: BookOpen },
   { title: "Grafik", url: "/schedule", icon: CalendarClock, adminOnly: true },
 ];
