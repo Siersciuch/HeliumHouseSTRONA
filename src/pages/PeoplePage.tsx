@@ -1,11 +1,12 @@
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { mockPeople } from "@/data/mock-data";
-import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { TableBody, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Key, Shield, ChevronRight, Check, X } from "lucide-react";
 import { EditableCell } from "@/components/EditableCell";
 import { useAuth } from "@/contexts/AuthContext";
 import { TableCell } from "@/components/ui/table";
+import { AdminTable } from "@/components/AdminTable";
 
 export default function PeoplePage() {
   const navigate = useNavigate();
@@ -16,9 +17,10 @@ export default function PeoplePage() {
     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
       <div className="bg-card border border-border rounded-xl overflow-hidden">
         <div className="overflow-x-auto">
-          <Table className="admin-table">
+          <AdminTable>
             <TableHeader>
               <TableRow>
+                <TableHead className="w-12 text-center">LP</TableHead>
                 <TableHead>Imię</TableHead>
                 <TableHead>Nazwisko</TableHead>
                 <TableHead>Telefon</TableHead>
@@ -37,16 +39,16 @@ export default function PeoplePage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {mockPeople.map((p) => (
+              {mockPeople.map((p, index) => (
                 <TableRow
                   key={p.id}
                   className="cursor-pointer hover:bg-accent/30"
-                  onClick={(e) => {
-                    // Don't navigate if admin is editing a cell
+                  onDoubleClick={(e) => {
                     if ((e.target as HTMLElement).tagName === "INPUT") return;
                     navigate(`/people/${p.id}`);
                   }}
                 >
+                  <TableCell className="text-center text-muted-foreground font-mono text-sm">{index + 1}</TableCell>
                   <EditableCell value={p.firstName} className="font-medium" />
                   <EditableCell value={p.lastName || "—"} className="font-medium" />
                   <EditableCell value={p.phone || "—"} className="text-muted-foreground" />
@@ -77,7 +79,7 @@ export default function PeoplePage() {
                 </TableRow>
               ))}
             </TableBody>
-          </Table>
+          </AdminTable>
         </div>
       </div>
     </motion.div>
