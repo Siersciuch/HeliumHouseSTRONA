@@ -1,35 +1,55 @@
 
 
-## Fix: Settlement Tables - Proper 12-Column Grid
+## Dynamic Iridescent Background -- "Oil Slick / Crow Feather" Effect
 
-### Problem
-Empty day rows use `colSpan={11}`, merging 11 columns into a single cell. This makes the table look like it has no column separators and prevents individual cell editing.
+### Concept
+A full-page animated background simulating gasoline iridescence on a dark puddle -- dark base with slowly shifting, morphing blobs of petrol-blue, emerald-green, and deep purple that drift and blend organically. Like the shimmer on crow feathers or oil on wet asphalt.
 
-### Solution
-Remove all `colSpan` usage. Every row (whether it has events or not) will render all 12 individual `EditableCell` components, each with its own borders.
+### Technical Approach
 
-### Changes
+**New component: `src/components/OilSlickBackground.tsx`**
 
-**File: `src/pages/PersonDetailPage.tsx`**
+A dedicated React component using pure CSS animations (no canvas/WebGL for performance). The technique:
+- A fixed full-screen `div` behind all content (`z-index: 0`, `position: fixed`)
+- Multiple overlapping radial gradients with petrol/emerald/purple colors at low opacity (~15-25%)
+- Each gradient blob animated independently via `@keyframes` that shift `background-position`, `scale`, and `opacity` over long durations (20-40 seconds) creating a slow, organic drift
+- CSS `mix-blend-mode: screen` to create the iridescent color-mixing effect
+- Dark base (`hsl(225, 25%, 6%)`) ensures colors appear as subtle sheens, not bright splashes
+- Uses `filter: blur(80px)` on the blobs for that soft, diffused oil-on-water look
 
-Replace the empty-day row (lines 169-173) so that instead of:
-```
-<EditableCell value="—" colSpan={11} />
-```
-it renders 11 separate cells:
-```
-<EditableCell value="—" />  // Nazwa eventu
-<EditableCell value="—" />  // Sklep
-<EditableCell value="—" />  // Lokalizacja
-<EditableCell value="—" />  // Miasto
-<EditableCell value="—" />  // Samochod
-<EditableCell value="—" />  // Km
-<EditableCell value="—" />  // Magazyn
-<EditableCell value="—" />  // Godz.
-<EditableCell value="—" />  // Foty
-<EditableCell value="—" />  // Uwagi
-<EditableCell value="—" />  // Kwota
+**Structure (3-4 animated layers):**
+```text
+Layer 0: Solid dark background (near-black)
+Layer 1: Large petrol-blue blob, drifting slowly (30s cycle)
+Layer 2: Emerald-green blob, different trajectory (25s cycle)
+Layer 3: Deep purple/magenta blob, slowest drift (40s cycle)
 ```
 
-This ensures every row always has exactly 12 cells with full vertical and horizontal borders, creating a proper spreadsheet-like grid with over 30 rows per month (matching the billing period days). Only admins can edit cell content via double-click.
+Each layer is a `div` with a large radial gradient, absolutely positioned, animated with different `@keyframes` for position and scale. The blur and blend mode create the realistic oil-slick shimmer.
+
+### Files to Create/Edit
+
+| File | Action | Description |
+|------|--------|-------------|
+| `src/components/OilSlickBackground.tsx` | **Create** | New component with 3-4 animated gradient blobs |
+| `src/index.css` | **Edit** | Add `@keyframes` for blob drift animations (3 sets) |
+| `src/components/AppLayout.tsx` | **Edit** | Insert `<OilSlickBackground />` as first child inside the main wrapper, behind sidebar and content |
+
+### CSS Keyframes (added to `src/index.css`)
+
+Three keyframe sets for organic movement:
+- `oil-drift-1`: Moves blob diagonally, scales up/down (30s, infinite)
+- `oil-drift-2`: Circular path, counter-direction (25s, infinite)
+- `oil-drift-3`: Slow vertical drift with scale pulse (40s, infinite)
+
+### Integration in AppLayout
+
+The background component renders as a fixed full-screen layer at `z-index: 0`. The sidebar gets `z-index: 1` (or higher via existing sticky/fixed positioning). Main content stays above naturally. The background is only active in dark mode; in light mode it either hides or switches to a subtle pearl shimmer.
+
+### Performance Considerations
+- Pure CSS animations (GPU-accelerated via `transform` and `opacity`)
+- No JavaScript animation loops, no canvas, no requestAnimationFrame
+- `will-change: transform` on animated layers
+- `pointer-events: none` so it never interferes with clicks
+- Minimal DOM: only 4 extra divs total
 
