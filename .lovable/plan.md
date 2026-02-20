@@ -1,33 +1,66 @@
 
 
-## Wiecej gwiazdek + Mglawice (Nebula Glow)
+## Plan: Poprawki wizualne, czyszczenie danych + info o eksporcie kodu
 
-### 1. SpaceBackground.tsx -- wiecej gwiazdek i mglawice
+### 1. Grafik -- tylko dla adminow
 
-**Gwiazdki:**
-- Zwiekszyc liczbe z 120 do **250**
-- Dodac roznicowanie jasnosci -- czesc gwiazdek bardziej przygaszonych (`bg-foreground/30`), czesc jasniejszych
-- Kilka wiekszych gwiazdek (3-4px) jako "bliskie gwiazdy"
+Grafik juz ma `adminOnly: true` w konfiguracji menu. Zweryfikuje, ze logika filtrowania w `visibleItems` prawidlowo ukrywa ten element dla zwyklych uzytkownikow (crew). Aktualnie warunek: `!item.adminOnly || effectiveRole === "admin" || isImpersonating` -- przy impersonacji nadal widoczny. Poprawka: ukryc Grafik rowniez podczas impersonacji (bo wtedy uzytkownik jest "crew").
 
-**Mglawice (3 plamy nebula):**
-- 3 duze `div` z `radial-gradient` w kolorach petrol-blue, purple i emerald
-- Kazdy z `blur(120px)`, niska opacity (~10-15%), `mix-blend-mode: screen` (dark) / `multiply` (light)
-- Animowane wolnym dryftem (`@keyframes nebula-drift-1/2/3`) -- przesuniecia i lekka zmiana skali w cyklach 30-50s
-- W trybie jasnym mglawice sa jeszcze bardziej subtelne (opacity ~5-8%)
+**Plik:** `src/components/AppLayout.tsx`
+- Zmiana warunku filtrowania: `!item.adminOnly || user?.role === "admin"` (realUser, nie effectiveRole)
 
-### 2. index.css -- nowe keyframes
+### 2. Flota -- samochody od lewej strony
 
-Dodanie 3 keyframes dla mglawic:
-- `nebula-drift-1`: ruch po przekatnej + scale, 35s
-- `nebula-drift-2`: ruch kolowy, 45s  
-- `nebula-drift-3`: wolny drift pionowy, 30s
+Aktualnie karty pojazdow sa w gridzie `sm:grid-cols-2 lg:grid-cols-3`. Zmiana na uklad od lewej -- karty beda wyrownane do lewej, zachowujac grid ale z `justify-start`.
 
-Plus klasy `.animate-nebula-1/2/3`
+**Plik:** `src/pages/FleetPage.tsx`
+- Dodanie `hover-levitate` do kart pojazdow (efekt lewitacji)
+- Upewnienie sie, ze grid wyswietla karty od lewej
+
+### 3. Wyczyszczenie danych testowych eventow
+
+Oproznienie tablicy `mockEvents` w `src/data/mock-events.ts` -- zostanie pusta tablica `[]`. Interfejs `EventTrip` i funkcja `getEventsByDate` pozostana bez zmian.
+
+**Plik:** `src/data/mock-events.ts`
+- `export const mockEvents: EventTrip[] = [];`
+
+### 4. Dopracowanie WSZYSTKICH tabel -- premium styling
+
+Tabele wystepuja na stronach: Eventy, Ekipa (People), Testery, Sklepy (Shops), Kontenty (Content), Grafik (Schedule).
+
+**Zmiany globalne w `src/components/ui/table.tsx`:**
+- `Table` wrapper: dodanie `bg-card backdrop-blur-xl` -- solidne tlo dla czytelnosci
+- `TableHead`: gradient header `bg-gradient-to-r from-muted/80 to-muted/40`, gorny/dolny border, sticky pozycja
+- `TableRow`: naprzemienne kolorowanie wierszy (`even:bg-muted/20`), hover z lewym border accent (`hover:shadow-[inset_3px_0_0_hsl(var(--primary))]`), plynna animacja
+- `TableCell`: lekko wieksze padding, subtelne prawe bordery
+
+**Dodatkowe style w `src/index.css`:**
+- `.admin-table` dostaje solidne tlo `bg-card` 
+- Naprzemienne wiersze: `tbody tr:nth-child(even)` z `bg-muted/15`
+- Hover na wierszu: lewy accent border + lekkie podswietlenie
+- Selected row: mocniejszy glow
+
+### 5. Efekt lewitacji na kartach na pozostalych stronach
+
+- **FleetPage.tsx**: dodanie `hover-levitate` do kart pojazdow
+- **StandsPage.tsx**: juz ma `hover-levitate` -- OK
+- Karty na Dashboardzie (Index.tsx) -- detail panel juz ma efekty
+
+### 6. Info: jak pobrac kod na wlasny hosting
+
+Kod mozna pobrac na dwa sposoby:
+- **GitHub**: Polacz konto GitHub w Settings -> GitHub, a nastepnie caly kod zostanie zsynchronizowany do repozytorium, skad mozna go sciagnac i wrzucic na dowolny serwer
+- **Pobieranie**: Po polaczeniu z GitHubem, sklonuj repo i uruchom `npm install && npm run build` -- folder `dist/` to gotowa aplikacja do wrzucenia na hosting (np. PHP/Apache/Nginx jako statyczne pliki)
+
+---
 
 ### Pliki do edycji
 
 | Plik | Zmiany |
 |------|--------|
-| `src/components/SpaceBackground.tsx` | 250 gwiazdek, 3 mglawice z radial-gradient + blur + drift |
-| `src/index.css` | 3 nowe keyframes `nebula-drift-*` i klasy animacji |
+| `src/components/AppLayout.tsx` | Poprawka warunku adminOnly dla Grafiku |
+| `src/data/mock-events.ts` | Wyczyszczenie mockEvents do pustej tablicy |
+| `src/pages/FleetPage.tsx` | Dodanie hover-levitate, wyrownanie do lewej |
+| `src/components/ui/table.tsx` | Premium styling: gradient header, alternating rows, hover effects, solidne tlo |
+| `src/index.css` | Admin-table solid bg, alternating rows, hover accent |
 
