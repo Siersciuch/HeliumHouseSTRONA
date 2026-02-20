@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { getEventsByDate, type EventTrip } from "@/data/mock-events";
 import { Truck as TruckIcon, ArrowRight } from "lucide-react";
 
-const DAYS_PL = ["Niedziela", "Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek", "Sobota"];
+const DAYS_SHORT = ["Ndz", "Pon", "Wt", "Śr", "Czw", "Pt", "Sob"];
 
 function isDayAfterTomorrow(date: Date): boolean {
   const dat = addDays(new Date(), 2);
@@ -71,39 +71,37 @@ function DayTile({ date, size, events, onSelectEvent }: DayTileProps) {
   const bgClass = getTileBgClass(date);
   const dayNum = format(date, "d");
   const monthName = format(date, "LLLL", { locale: pl });
-  const dayName = DAYS_PL[getDay(date)];
+  const dayShort = DAYS_SHORT[getDay(date)];
 
   const minH = size === "large" ? "min-h-[156px]" : size === "medium" ? "min-h-[120px]" : "min-h-[72px]";
   const padding = size === "large" ? "p-5" : size === "medium" ? "p-4" : "p-3";
 
   return (
-    <div className={`rounded-xl border ${bgClass} ${minH} ${padding} transition-all`}>
-      <div className="flex items-baseline gap-3 mb-2">
-        <span className={`font-bold ${size === "large" ? "text-3xl" : size === "medium" ? "text-2xl" : "text-xl"}`}>
+    <div className={`rounded-xl border ${bgClass} ${minH} ${padding} transition-all flex gap-4`}>
+      {/* Date column — vertical stack */}
+      <div className="flex flex-col items-start shrink-0 w-16">
+        <span className={`font-bold leading-none ${size === "large" ? "text-3xl" : size === "medium" ? "text-2xl" : "text-xl"}`}>
           {dayNum}
         </span>
-        <span className={`${size === "large" ? "text-lg" : size === "medium" ? "text-base" : "text-sm"} text-foreground/70`}>{monthName}</span>
-        <span className={`${size === "large" ? "text-base" : size === "medium" ? "text-sm" : "text-sm"} text-foreground/50`}>{dayName}</span>
+        <span className={`${size === "large" ? "text-sm" : "text-xs"} text-foreground/70 capitalize`}>{monthName}</span>
+        <span className={`${size === "large" ? "text-xs" : "text-[11px]"} text-foreground/50`}>{dayShort}</span>
         {isToday(date) && (
-          <span className="text-[10px] font-semibold bg-emerald-600/30 text-emerald-300 rounded-full px-2 py-0.5">DZIŚ</span>
+          <span className="text-[10px] font-semibold bg-emerald-600/30 text-emerald-300 rounded-full px-2 py-0.5 mt-1">DZIŚ</span>
         )}
         {isTomorrow(date) && (
-          <span className="text-[10px] font-semibold bg-orange-500/30 text-orange-300 rounded-full px-2 py-0.5">JUTRO</span>
+          <span className="text-[10px] font-semibold bg-orange-500/30 text-orange-300 rounded-full px-2 py-0.5 mt-1">JUTRO</span>
         )}
         {isDayAfterTomorrow(date) && (
-          <span className="text-[10px] font-semibold bg-orange-500/30 text-orange-300 rounded-full px-2 py-0.5">POJUTRZE</span>
+          <span className="text-[10px] font-semibold bg-orange-500/30 text-orange-300 rounded-full px-2 py-0.5 mt-1">POJUTRZE</span>
         )}
       </div>
 
-      {events.length > 0 ? (
-        <div className="flex flex-wrap gap-2">
-          {events.map((ev) => (
-            <BusChip key={ev.id} event={ev} onClick={() => onSelectEvent?.(ev)} />
-          ))}
-        </div>
-      ) : (
-        <div className="h-[28px]" /> 
-      )}
+      {/* Bus chips — pushed right */}
+      <div className="flex-1 flex flex-wrap gap-2 items-start justify-end content-start">
+        {events.map((ev) => (
+          <BusChip key={ev.id} event={ev} onClick={() => onSelectEvent?.(ev)} />
+        ))}
+      </div>
     </div>
   );
 }
@@ -220,7 +218,6 @@ export default function DashboardPage() {
         className="w-3/4 overflow-y-auto pr-2 space-y-1.5"
         style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
       >
-        <h1 className="text-xl font-bold sticky top-0 bg-background/80 backdrop-blur-sm py-2 z-10">Kalendarz</h1>
         {days.map(({ date, events }) => (
           <div key={format(date, "yyyy-MM-dd")} ref={isYesterday(date) ? yesterdayRef : undefined}>
             <DayTile
