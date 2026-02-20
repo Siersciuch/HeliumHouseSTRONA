@@ -103,14 +103,7 @@ export default function EventDetailPage() {
           <div className="space-y-1 text-sm">
             <p className="font-medium">{ev.standShort}{stand ? ` — ${stand.fullName}` : ""}</p>
             {stand && (
-              <>
-                <p className="text-muted-foreground">{stand.dimensions} · {stand.weight}</p>
-                {stand.needsTrailer && (
-                  <span className="inline-block text-xs bg-orange-400/20 text-orange-400 px-2 py-0.5 rounded-full">
-                    Wymaga przyczepy
-                  </span>
-                )}
-              </>
+              <p className="text-muted-foreground">{stand.description}</p>
             )}
           </div>
         </Section>

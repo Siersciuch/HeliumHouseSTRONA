@@ -1,12 +1,6 @@
 import { motion } from "framer-motion";
 import { mockPeople } from "@/data/mock-data";
-import { Phone, Mail, Briefcase } from "lucide-react";
-
-const roleColor: Record<string, string> = {
-  kierownik: "bg-emerald-500/20 text-emerald-400",
-  montażysta: "bg-sky-400/20 text-sky-400",
-  kierowca: "bg-orange-400/20 text-orange-400",
-};
+import { Phone, Mail, MapPin, Car, Shield } from "lucide-react";
 
 export default function PeoplePage() {
   return (
@@ -18,20 +12,26 @@ export default function PeoplePage() {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="h-10 w-10 rounded-full gradient-petrol flex items-center justify-center text-sm font-bold text-white">
-                  {p.name.charAt(0)}
+                  {p.firstName.charAt(0)}{p.lastName.charAt(0)}
                 </div>
                 <div>
                   <p className="font-semibold text-foreground">{p.name}</p>
-                  <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${roleColor[p.role] || "bg-muted text-muted-foreground"}`}>
-                    {p.role}
-                  </span>
+                  <div className="flex items-center gap-2">
+                    {p.isAdmin && (
+                      <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400">Admin</span>
+                    )}
+                    {p.drivingLicense && (
+                      <span className="text-xs text-muted-foreground">kat. {p.drivingLicense}</span>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
             <div className="space-y-1.5 text-sm text-muted-foreground">
-              <p className="flex items-center gap-2"><Phone className="h-3.5 w-3.5" />{p.phone}</p>
-              <p className="flex items-center gap-2"><Mail className="h-3.5 w-3.5" />{p.email}</p>
-              <p className="flex items-center gap-2"><Briefcase className="h-3.5 w-3.5" />{p.trips.length} wyjazdów</p>
+              {p.phone && <p className="flex items-center gap-2"><Phone className="h-3.5 w-3.5" />{p.phone}</p>}
+              {p.email && <p className="flex items-center gap-2"><Mail className="h-3.5 w-3.5" />{p.email}</p>}
+              {p.city && <p className="flex items-center gap-2"><MapPin className="h-3.5 w-3.5" />{p.city}</p>}
+              <p className="flex items-center gap-2"><Car className="h-3.5 w-3.5" />{p.trips.length} wyjazdów</p>
             </div>
           </div>
         ))}
