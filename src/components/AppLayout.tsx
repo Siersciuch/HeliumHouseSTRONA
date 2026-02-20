@@ -40,7 +40,6 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
-  { title: "Dashboard", url: "/", icon: LayoutDashboard },
   { title: "Eventy", url: "/events", icon: Calendar },
   { title: "Ludzie", url: "/people", icon: Users },
   { title: "Flota", url: "/fleet", icon: Truck },
@@ -104,7 +103,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
             >
               {/* Logo */}
               <div className={`flex items-center ${expanded ? "gap-3 px-4" : "justify-center"} py-4 border-b border-sidebar-border w-full`}>
-                <button onClick={() => { navigate("/"); closeSidebarOnMobile(); }} className="focus:outline-none shrink-0">
+                <button onClick={() => { navigate("/"); window.dispatchEvent(new Event("scroll-to-today")); closeSidebarOnMobile(); }} className="focus:outline-none shrink-0">
                   <img src={logoHH} alt="Helium House" className="h-10 w-10 rounded-lg object-cover hover:opacity-80 transition-opacity" />
                 </button>
                 {expanded && (
