@@ -4,7 +4,9 @@ import { mockStands } from "@/data/mock-data";
 import { mockEvents } from "@/data/mock-events";
 import { ArrowLeft, Store, Image as ImageIcon, Package } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { TableBody, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { AdminTable } from "@/components/AdminTable";
+import { EditableCell } from "@/components/EditableCell";
 
 // Mock stand components data
 const standComponents: Record<string, { name: string; dimensions: string; quantity: number; weight: string }[]> = {
@@ -70,7 +72,6 @@ export default function StandDetailPage() {
 
       {/* Photos + PDF side by side */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        {/* Photos */}
         <div>
           <h2 className="text-lg font-semibold mb-3 flex items-center gap-2">
             <ImageIcon className="h-5 w-5" /> Zdjęcia
@@ -83,8 +84,6 @@ export default function StandDetailPage() {
             ))}
           </div>
         </div>
-
-        {/* PDF placeholder */}
         <div>
           <h2 className="text-lg font-semibold mb-3">Dokumentacja PDF</h2>
           <div className="aspect-[3/4] rounded-xl bg-muted/40 border border-border flex flex-col items-center justify-center gap-2 text-muted-foreground">
@@ -100,7 +99,7 @@ export default function StandDetailPage() {
         <div>
           <h2 className="text-lg font-semibold mb-3">Skład stoiska ({components.length} elementów)</h2>
           <div className="bg-card border border-border rounded-xl overflow-hidden">
-            <Table>
+            <AdminTable>
               <TableHeader>
                 <TableRow>
                   <TableHead className="w-10">LP</TableHead>
@@ -113,15 +112,15 @@ export default function StandDetailPage() {
               <TableBody>
                 {components.map((c, i) => (
                   <TableRow key={i}>
-                    <TableCell className="text-muted-foreground">{i + 1}</TableCell>
-                    <TableCell className="font-medium">{c.name}</TableCell>
-                    <TableCell className="text-muted-foreground">{c.dimensions}</TableCell>
-                    <TableCell className="text-center">{c.quantity}</TableCell>
-                    <TableCell className="text-muted-foreground">{c.weight}</TableCell>
+                    <EditableCell value={String(i + 1)} className="text-muted-foreground" />
+                    <EditableCell value={c.name} className="font-medium" />
+                    <EditableCell value={c.dimensions} className="text-muted-foreground" />
+                    <EditableCell value={String(c.quantity)} className="text-center" />
+                    <EditableCell value={c.weight} className="text-muted-foreground" />
                   </TableRow>
                 ))}
               </TableBody>
-            </Table>
+            </AdminTable>
           </div>
         </div>
       )}
@@ -131,7 +130,7 @@ export default function StandDetailPage() {
         <h2 className="text-lg font-semibold mb-3">Historia wyjazdów ({standEvents.length})</h2>
         {standEvents.length > 0 ? (
           <div className="bg-card border border-border rounded-xl overflow-hidden">
-            <Table>
+            <AdminTable>
               <TableHeader>
                 <TableRow>
                   <TableHead>Data</TableHead>
@@ -143,12 +142,12 @@ export default function StandDetailPage() {
               </TableHeader>
               <TableBody>
                 {standEvents.map((ev) => (
-                  <TableRow key={ev.id} className="cursor-pointer hover:bg-accent/30" onClick={() => navigate(`/events/${ev.id}`)}>
-                    <TableCell className="font-medium">{ev.date}</TableCell>
-                    <TableCell>{ev.city}</TableCell>
-                    <TableCell className="text-muted-foreground">{ev.client}</TableCell>
-                    <TableCell className="text-muted-foreground">{ev.crew.join(", ")}</TableCell>
-                    <TableCell>
+                  <TableRow key={ev.id} className="cursor-pointer hover:bg-accent/30" onDoubleClick={() => navigate(`/events/${ev.id}`)}>
+                    <EditableCell value={ev.date} className="font-medium" />
+                    <EditableCell value={ev.city} />
+                    <EditableCell value={ev.client} className="text-muted-foreground" />
+                    <EditableCell value={ev.crew.join(", ")} className="text-muted-foreground" />
+                    <EditableCell value={ev.status === "planned" ? "Zaplanowany" : ev.status === "in-progress" ? "W trakcie" : ev.status === "completed" ? "Zakończony" : "Anulowany"}>
                       <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${
                         ev.status === "completed" ? "bg-emerald-500/20 text-emerald-400" :
                         ev.status === "in-progress" ? "bg-orange-400/20 text-orange-400" :
@@ -157,11 +156,11 @@ export default function StandDetailPage() {
                       }`}>
                         {ev.status === "planned" ? "Zaplanowany" : ev.status === "in-progress" ? "W trakcie" : ev.status === "completed" ? "Zakończony" : "Anulowany"}
                       </span>
-                    </TableCell>
+                    </EditableCell>
                   </TableRow>
                 ))}
               </TableBody>
-            </Table>
+            </AdminTable>
           </div>
         ) : (
           <p className="text-muted-foreground text-sm">Brak wpisanych wyjazdów dla tego stoiska</p>

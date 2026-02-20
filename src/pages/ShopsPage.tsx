@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { mockShops } from "@/data/mock-shops";
-import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { TableBody, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { AdminTable } from "@/components/AdminTable";
 import { Check, X } from "lucide-react";
 import { EditableCell } from "@/components/EditableCell";
 
@@ -10,7 +11,7 @@ export default function ShopsPage() {
       <h1 className="text-2xl font-bold">Sklepy Douglas</h1>
       <div className="bg-card border border-border rounded-xl overflow-hidden">
         <div className="overflow-x-auto">
-          <Table className="admin-table">
+          <AdminTable>
             <TableHeader>
               <TableRow>
                 <TableHead className="w-14">Nr filii</TableHead>
@@ -45,7 +46,7 @@ export default function ShopsPage() {
                 </TableRow>
               ))}
             </TableBody>
-          </Table>
+          </AdminTable>
         </div>
       </div>
     </motion.div>

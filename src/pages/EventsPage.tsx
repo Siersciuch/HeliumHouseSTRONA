@@ -154,7 +154,8 @@ export default function EventsPage() {
         <AdminTable>
           <TableHeader>
             <TableRow>
-              <TableHead>Data</TableHead>
+              <TableHead>ID</TableHead>
+              <TableHead>Data realizacji</TableHead>
               <TableHead>Rodzaj</TableHead>
               <TableHead>Samochód</TableHead>
               <TableHead>Ekipa</TableHead>
@@ -171,6 +172,7 @@ export default function EventsPage() {
                 className="cursor-pointer hover:bg-accent/30"
                 onClick={() => navigate(`/events/${ev.id}`)}
               >
+                <EditableCell value={ev.id} className="text-muted-foreground font-mono text-xs" />
                 <EditableCell value={ev.date} className="whitespace-nowrap" />
                 <EditableCell value={ev.standShort} />
                 <EditableCell value={ev.vehicle.split("(")[0].trim()} />

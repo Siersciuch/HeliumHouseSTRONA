@@ -4,7 +4,8 @@ import { mockPeople } from "@/data/mock-data";
 import { mockEvents } from "@/data/mock-events";
 import { ArrowLeft, Phone, Mail, MapPin, Shield, Key, Car, IdCard, Smartphone, Clock, StickyNote, ShieldCheck, UserCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { TableBody, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { AdminTable } from "@/components/AdminTable";
 import { EditableCell } from "@/components/EditableCell";
 import { addDays, format } from "date-fns";
 import { useAuth } from "@/contexts/AuthContext";
@@ -104,7 +105,7 @@ export default function PersonDetailPage() {
 
       {/* Person info as editable table */}
       <div className="bg-card border border-border rounded-xl overflow-hidden">
-        <Table className="admin-table">
+        <AdminTable>
           <TableBody>
             {infoItems.map((item, i) => (
               <TableRow key={i}>
@@ -118,7 +119,7 @@ export default function PersonDetailPage() {
               </TableRow>
             ))}
           </TableBody>
-        </Table>
+        </AdminTable>
       </div>
 
       {/* Monthly billing tables */}
@@ -129,7 +130,7 @@ export default function PersonDetailPage() {
           <div key={bm.label} className="space-y-2">
             <h2 className="text-lg font-semibold">{bm.label} {year}</h2>
             <div className="bg-card border border-border rounded-xl overflow-x-auto">
-              <Table className="admin-table">
+              <AdminTable>
                 <TableHeader>
                   <TableRow>
                     <TableHead className="w-16">Data</TableHead>
@@ -189,7 +190,7 @@ export default function PersonDetailPage() {
                     ));
                   })}
                 </TableBody>
-              </Table>
+              </AdminTable>
             </div>
           </div>
         );
