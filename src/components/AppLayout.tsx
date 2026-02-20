@@ -25,6 +25,7 @@ import { Button } from "@/components/ui/button";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { motion, AnimatePresence } from "framer-motion";
 import logoHH from "@/assets/logoHH.jpg";
+import OilSlickBackground from "@/components/OilSlickBackground";
 import {
   Tooltip,
   TooltipContent,
@@ -76,7 +77,8 @@ export default function AppLayout({ children }: AppLayoutProps) {
 
   return (
     <TooltipProvider delayDuration={300}>
-      <div className="flex min-h-screen w-full bg-background">
+      <div className="flex min-h-screen w-full bg-background relative">
+        <OilSlickBackground />
         {/* Mobile overlay */}
         <AnimatePresence>
           {isMobile && sidebarOpen && (
