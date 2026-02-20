@@ -30,7 +30,7 @@ function getBillingDays(bm: typeof billingMonths[0], year: number) {
   return days;
 }
 
-const DAYS_SHORT = ["Nd", "Pn", "Wt", "Śr", "Cz", "Pt", "Sb"];
+// removed DAYS_SHORT - no longer used
 
 export default function PersonDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -135,6 +135,7 @@ export default function PersonDetailPage() {
       {billingMonths.map((bm) => {
         const days = getBillingDays(bm, year);
         const isCompact = compactMonths.includes(bm.label);
+        const compactCls = isCompact ? "py-0.5 px-1" : "py-1 px-2";
         return (
           <div key={bm.label} className="space-y-2">
             <h2 className="text-lg font-semibold">{bm.label} {year}</h2>
@@ -142,16 +143,18 @@ export default function PersonDetailPage() {
               <AdminTable>
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="w-16">Data</TableHead>
-                    <TableHead className="w-10">Dzień</TableHead>
-                    <TableHead>Stoisko</TableHead>
-                    <TableHead>Miasto</TableHead>
-                    <TableHead>Klient</TableHead>
-                    <TableHead>Pojazd</TableHead>
-                    <TableHead className="w-16">Godz.</TableHead>
-                    <TableHead className="w-16">Foto</TableHead>
-                    <TableHead className="w-20">Status</TableHead>
-                    <TableHead className="w-20">Wartość</TableHead>
+                    <TableHead className={`w-24 ${compactCls}`}>Data</TableHead>
+                    <TableHead className={compactCls}>Nazwa eventu</TableHead>
+                    <TableHead className={compactCls}>Sklep</TableHead>
+                    <TableHead className={compactCls}>Lokalizacja</TableHead>
+                    <TableHead className={compactCls}>Miasto</TableHead>
+                    <TableHead className={compactCls}>Samochód</TableHead>
+                    <TableHead className={`w-16 ${compactCls}`}>Km</TableHead>
+                    <TableHead className={compactCls}>Magazyn</TableHead>
+                    <TableHead className={`w-16 ${compactCls}`}>Godz.</TableHead>
+                    <TableHead className={`w-16 ${compactCls}`}>Foty</TableHead>
+                    <TableHead className={compactCls}>Uwagi</TableHead>
+                    <TableHead className={`w-20 ${compactCls}`}>Kwota</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -160,14 +163,12 @@ export default function PersonDetailPage() {
                     const dayEvents = personEvents.filter((ev) => ev.date === dateStr);
                     const isWeekend = day.getDay() === 0 || day.getDay() === 6;
                     const rowBg = isWeekend ? "bg-muted/30" : "";
-                    const compactCls = isCompact ? "py-0.5" : "";
 
                     if (dayEvents.length === 0) {
                       return (
                         <TableRow key={dateStr} className={rowBg}>
-                          <EditableCell value={format(day, "dd.MM")} className={`text-xs text-muted-foreground ${compactCls}`} />
-                          <EditableCell value={DAYS_SHORT[day.getDay()]} className={`text-xs text-muted-foreground ${compactCls}`} />
-                          <EditableCell value="—" colSpan={8} className={`text-xs text-muted-foreground/50 ${compactCls}`} />
+                          <EditableCell value={format(day, "dd.MM.yyyy")} className={`text-xs text-muted-foreground ${compactCls}`} />
+                          <EditableCell value="—" colSpan={11} className={`text-xs text-muted-foreground/50 ${compactCls}`} />
                         </TableRow>
                       );
                     }
@@ -179,28 +180,19 @@ export default function PersonDetailPage() {
                         onClick={() => navigate(`/events/${ev.id}`)}
                       >
                         {idx === 0 && (
-                          <>
-                            <EditableCell value={format(day, "dd.MM")} className={`text-xs font-medium ${compactCls}`} rowSpan={dayEvents.length} />
-                            <EditableCell value={DAYS_SHORT[day.getDay()]} className={`text-xs text-muted-foreground ${compactCls}`} rowSpan={dayEvents.length} />
-                          </>
+                          <EditableCell value={format(day, "dd.MM.yyyy")} className={`text-xs font-medium ${compactCls}`} rowSpan={dayEvents.length} />
                         )}
-                        <EditableCell value={ev.standShort} className={`text-xs font-medium ${compactCls}`} />
-                        <EditableCell value={ev.city} className={`text-xs ${compactCls}`} />
-                        <EditableCell value={ev.client} className={`text-xs text-muted-foreground ${compactCls}`} />
-                        <EditableCell value={ev.vehicle} className={`text-xs text-muted-foreground ${compactCls}`} />
+                        <EditableCell value={ev.eventName || ev.standShort || "—"} className={`text-xs font-medium ${compactCls}`} />
+                        <EditableCell value={ev.shopNumber || "—"} className={`text-xs ${compactCls}`} />
+                        <EditableCell value={ev.shopLocation || "—"} className={`text-xs ${compactCls}`} />
+                        <EditableCell value={ev.city || "—"} className={`text-xs ${compactCls}`} />
+                        <EditableCell value={ev.vehicle || "—"} className={`text-xs text-muted-foreground ${compactCls}`} />
+                        <EditableCell value={ev.routeLength || "—"} className={`text-xs ${compactCls}`} />
+                        <EditableCell value="—" className={`text-xs ${compactCls}`} />
                         <EditableCell value={ev.time || "—"} className={`text-xs ${compactCls}`} />
-                        <EditableCell value={ev.photos?.length ? `${ev.photos.length} zdjęć` : "—"} className={`text-xs ${compactCls}`} />
-                        <EditableCell value={ev.status === "planned" ? "Plan" : ev.status === "in-progress" ? "W trakcie" : ev.status === "completed" ? "OK" : "Anul."} className={compactCls}>
-                          <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${
-                            ev.status === "completed" ? "bg-emerald-500/20 text-emerald-400" :
-                            ev.status === "in-progress" ? "bg-orange-400/20 text-orange-400" :
-                            ev.status === "cancelled" ? "bg-destructive/20 text-destructive" :
-                            "bg-sky-400/20 text-sky-400"
-                          }`}>
-                            {ev.status === "planned" ? "Plan" : ev.status === "in-progress" ? "W trakcie" : ev.status === "completed" ? "OK" : "Anul."}
-                          </span>
-                        </EditableCell>
-                        <EditableCell value="" className={`text-xs ${compactCls}`} />
+                        <EditableCell value={ev.photos?.length ? `${ev.photos.length}` : "—"} className={`text-xs ${compactCls}`} />
+                        <EditableCell value={ev.notes || "—"} className={`text-xs ${compactCls}`} />
+                        <EditableCell value="—" className={`text-xs ${compactCls}`} />
                       </TableRow>
                     ));
                   })}
