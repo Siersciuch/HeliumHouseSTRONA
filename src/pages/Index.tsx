@@ -3,7 +3,8 @@ import { addDays, format, isToday, isTomorrow, isYesterday, getDay, startOfYear,
 import { pl } from "date-fns/locale";
 import { motion } from "framer-motion";
 import { getEventsByDate, type EventTrip } from "@/data/mock-events";
-import { Truck as TruckIcon, ArrowRight } from "lucide-react";
+import { ArrowRight, Truck as TruckIcon } from "lucide-react";
+import busImage from "@/assets/bus.png";
 
 const DAYS_SHORT = ["Ndz", "Pon", "Wt", "Śr", "Czw", "Pt", "Sob"];
 
@@ -47,15 +48,20 @@ function BusChip({ event, onClick }: BusChipProps) {
   return (
     <button
       onClick={onClick}
-      className="flex items-center gap-1.5 bg-card border border-border rounded-lg px-2.5 py-1.5 hover:shadow-glow hover:border-primary/40 transition-all text-left group"
+      className="relative hover:scale-105 hover:shadow-glow transition-all group"
+      style={{ width: 120, height: 52 }}
     >
-      <TruckIcon className="h-4 w-4 text-foreground shrink-0" />
-      <span className="text-xs font-semibold text-foreground">{event.standShort}</span>
-      <span className="text-xs text-muted-foreground">{event.city}</span>
+      {/* Bus image */}
+      <img src={busImage} alt="Bus" className="w-full h-full object-contain" />
+      {/* Text overlay on the bus body */}
+      <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none" style={{ paddingBottom: 6 }}>
+        <span className="text-[11px] font-bold leading-tight text-gray-800 drop-shadow-sm">{event.standShort}</span>
+        <span className="text-[9px] leading-tight text-gray-600 drop-shadow-sm">{event.city}</span>
+      </div>
+      {/* Trailer badge */}
       {event.hasTrailer && (
-        <span className="text-[10px] bg-muted rounded px-1 py-0.5 text-muted-foreground">+P</span>
+        <span className="absolute -top-1 -right-1 text-[8px] font-bold bg-primary text-primary-foreground rounded px-1 py-0.5 shadow">+P</span>
       )}
-      <ArrowRight className="h-3 w-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity ml-auto" />
     </button>
   );
 }
@@ -78,7 +84,6 @@ function DayTile({ date, size, events, onSelectEvent }: DayTileProps) {
 
   return (
     <div className={`rounded-xl border ${bgClass} ${minH} ${padding} transition-all flex gap-4`}>
-      {/* Date column — vertical stack */}
       <div className="flex flex-col items-start shrink-0 w-16">
         <span className={`font-bold leading-none ${size === "large" ? "text-3xl" : size === "medium" ? "text-2xl" : "text-xl"}`}>
           {dayNum}
@@ -93,7 +98,6 @@ function DayTile({ date, size, events, onSelectEvent }: DayTileProps) {
         )}
       </div>
 
-      {/* Bus chips — pushed right */}
       <div className="flex-1 flex flex-wrap gap-2 items-start justify-end content-start">
         {events.map((ev) => (
           <BusChip key={ev.id} event={ev} onClick={() => onSelectEvent?.(ev)} />
@@ -138,19 +142,19 @@ function EventDetailPanel({ event, onClose }: EventDetailPanelProps) {
       <div className="space-y-3 text-sm">
         <div>
           <p className="text-muted-foreground text-xs uppercase tracking-wider mb-1">Klient</p>
-          <p className="font-medium">{event.client}</p>
+          <p className="font-medium">{event.client || "—"}</p>
         </div>
         <div>
           <p className="text-muted-foreground text-xs uppercase tracking-wider mb-1">Ekipa</p>
-          <p>{event.crew.join(", ")}</p>
+          <p>{event.crew.length ? event.crew.join(", ") : "—"}</p>
         </div>
         <div>
           <p className="text-muted-foreground text-xs uppercase tracking-wider mb-1">Pojazd</p>
-          <p>{event.vehicle}</p>
+          <p>{event.vehicle || "—"}</p>
         </div>
         <div>
           <p className="text-muted-foreground text-xs uppercase tracking-wider mb-1">Testery</p>
-          <p>{event.testers.join(", ")}</p>
+          <p>{event.testers.length ? event.testers.join(", ") : "—"}</p>
         </div>
         {event.hasTrailer && (
           <div className="flex items-center gap-2 text-xs bg-muted/50 rounded-lg px-3 py-2">
@@ -209,7 +213,6 @@ export default function DashboardPage() {
 
   return (
     <div className="flex gap-4 h-[calc(100vh-5rem)]">
-      {/* Calendar tiles — 3/4 */}
       <div
         ref={scrollRef}
         className="w-3/4 overflow-y-auto pr-2 space-y-1.5"
@@ -227,7 +230,6 @@ export default function DashboardPage() {
         ))}
       </div>
 
-      {/* Detail panel — 1/4 */}
       <div className="w-1/4 bg-card border border-border rounded-xl p-4 overflow-y-auto">
         <EventDetailPanel event={selectedEvent} onClose={() => setSelectedEvent(null)} />
       </div>

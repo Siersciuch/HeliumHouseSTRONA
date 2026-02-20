@@ -1,21 +1,14 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { mockEvents, type EventTrip } from "@/data/mock-events";
-import { mockStands } from "@/data/mock-data";
-import {
-  ArrowLeft,
-  Calendar,
-  Clock,
-  MapPin,
-  Users,
-  Truck as TruckIcon,
-  FlaskConical,
-  Store,
-  StickyNote,
-  Building,
-} from "lucide-react";
+import { ArrowLeft, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableRow,
+} from "@/components/ui/table";
 
 function statusLabel(s: EventTrip["status"]) {
   switch (s) {
@@ -35,17 +28,19 @@ function statusClass(s: EventTrip["status"]) {
   }
 }
 
-function Section({ icon: Icon, title, children }: { icon: React.ElementType; title: string; children: React.ReactNode }) {
+function Val({ v }: { v: string | string[] | undefined }) {
+  if (!v || (Array.isArray(v) && v.length === 0)) return <span className="text-muted-foreground">—</span>;
+  if (Array.isArray(v)) return <span>{v.join(", ")}</span>;
+  return <span>{v}</span>;
+}
+
+function AlarmVal({ items, label }: { items: string[]; label: string }) {
+  if (!items || items.length === 0) return <span className="text-emerald-400 text-xs">Komplet</span>;
   return (
-    <Card>
-      <CardHeader className="pb-3">
-        <CardTitle className="text-base flex items-center gap-2">
-          <Icon className="h-4 w-4 text-muted-foreground" />
-          {title}
-        </CardTitle>
-      </CardHeader>
-      <CardContent>{children}</CardContent>
-    </Card>
+    <span className="flex items-center gap-1.5 text-destructive">
+      <AlertTriangle className="h-3.5 w-3.5" />
+      <span className="text-xs">{items.join(", ")}</span>
+    </span>
   );
 }
 
@@ -65,86 +60,77 @@ export default function EventDetailPage() {
     );
   }
 
-  const stand = mockStands.find((s) => s.shortCode === ev.standShort);
+  const eventName = ev.eventName || [ev.date, ev.standShort, ev.shopLocation || ev.city].filter(Boolean).join(" ");
+
+  const rows: { label: string; value: React.ReactNode }[] = [
+    { label: "ID eventu", value: ev.id },
+    { label: "Data realizacji", value: ev.date },
+    { label: "Rodzaj eventu", value: ev.standShort || "—" },
+    { label: "Sklep / lokalizacja", value: ev.shopNumber ? `${ev.shopNumber} — ${ev.shopLocation}` : (ev.shopLocation || "—") },
+    { label: "Nazwa eventu / katalog", value: eventName },
+    { label: "Miejscowość i dokładny adres", value: [ev.city, ev.address].filter(Boolean).join(", ") || "—" },
+    { label: "Telefony do sklepu", value: <Val v={ev.shopPhones} /> },
+    { label: "Opis lokalizacji", value: ev.locationDescription || "—" },
+    { label: "Opis eventu", value: ev.eventDescription || "—" },
+    { label: "Czas trwania eventu", value: ev.dateFrom && ev.dateTo ? `${ev.dateFrom} — ${ev.dateTo}` : "—" },
+    { label: "Marki", value: <Val v={ev.brands} /> },
+    { label: "Testery do zabrania", value: <Val v={ev.testers} /> },
+    { label: "Brakujące testery", value: <AlarmVal items={ev.missingTesters} label="testery" /> },
+    { label: "Kontenty marek", value: <Val v={ev.brandContents} /> },
+    { label: "Brakujące kontenty", value: <AlarmVal items={ev.missingContents} label="kontenty" /> },
+    { label: "Godz. startu — RAMPA", value: ev.startTimeRamp || "—" },
+    { label: "Godz. startu — SKLEP", value: ev.startTimeShop || "—" },
+    { label: "Samochody, przyczepy", value: <Val v={ev.vehicles} /> },
+    { label: "Czas nieobecności samochodów", value: ev.vehicleAbsenceFrom && ev.vehicleAbsenceTo ? `${ev.vehicleAbsenceFrom} → ${ev.vehicleAbsenceTo}` : "—" },
+    { label: "Długość całej trasy", value: ev.routeLength || "—" },
+    { label: "Czy rozładowujemy samochód", value: ev.unloadType || "—" },
+    { label: "Ekipa", value: <Val v={ev.crew} /> },
+    { label: "Foty", value: <Val v={ev.photos} /> },
+    { label: "Foto-stoisko", value: <Val v={ev.boothPhotos} /> },
+    { label: "Foty tankowanie", value: <Val v={ev.fuelPhotos} /> },
+    { label: "Szpilka do rampy", value: ev.rampPin || "—" },
+    { label: "Pogoda na trasie", value: ev.weatherOnRoute || "—" },
+    { label: "PROTOKÓŁ", value: "" },
+    { label: "Opis drogi z rampy", value: ev.rampPathDescription || "—" },
+    { label: "Uwagi ogólne", value: ev.notes || "—" },
+  ];
 
   return (
-    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-4 max-w-3xl">
+    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-4 max-w-4xl">
       {/* Header */}
       <div className="flex items-center gap-3">
         <Button variant="ghost" size="icon" onClick={() => navigate("/events")}>
           <ArrowLeft className="h-5 w-5" />
         </Button>
         <div className="flex-1 min-w-0">
-          <h1 className="text-2xl font-bold">{ev.date} — {ev.city}</h1>
-          <p className="text-muted-foreground">{ev.client}</p>
+          <h1 className="text-2xl font-bold">{eventName}</h1>
+          <p className="text-muted-foreground">{ev.client || "Brak klienta"}</p>
         </div>
         <span className={`text-xs font-medium px-3 py-1.5 rounded-full border ${statusClass(ev.status)}`}>
           {statusLabel(ev.status)}
         </span>
       </div>
 
-      {/* Info grid */}
-      <div className="grid gap-3 sm:grid-cols-2">
-        <Section icon={Calendar} title="Data i godzina">
-          <div className="space-y-1 text-sm">
-            <p className="flex items-center gap-2"><Calendar className="h-3.5 w-3.5 text-muted-foreground" /> {ev.date}</p>
-            <p className="flex items-center gap-2"><Clock className="h-3.5 w-3.5 text-muted-foreground" /> {ev.time}</p>
-          </div>
-        </Section>
-
-        <Section icon={MapPin} title="Lokalizacja">
-          <div className="space-y-1 text-sm">
-            <p>{ev.city}</p>
-            <p className="text-muted-foreground">{ev.client}</p>
-          </div>
-        </Section>
-
-        <Section icon={Store} title="Stoisko">
-          <div className="space-y-1 text-sm">
-            <p className="font-medium">{ev.standShort}{stand ? ` — ${stand.fullName}` : ""}</p>
-            {stand && (
-              <p className="text-muted-foreground">{stand.description}</p>
-            )}
-          </div>
-        </Section>
-
-        <Section icon={TruckIcon} title="Pojazd">
-          <p className="text-sm font-medium">{ev.vehicle}</p>
-          {ev.hasTrailer && (
-            <span className="inline-block mt-1 text-xs bg-sky-400/20 text-sky-400 px-2 py-0.5 rounded-full">
-              + przyczepa
-            </span>
-          )}
-        </Section>
-
-        <Section icon={Users} title="Ekipa">
-          <ul className="space-y-1 text-sm">
-            {ev.crew.map((name) => (
-              <li key={name} className="flex items-center gap-2">
-                <div className="h-6 w-6 rounded-full bg-primary/20 flex items-center justify-center text-xs font-bold text-primary-foreground">
-                  {name.charAt(0)}
-                </div>
-                {name}
-              </li>
-            ))}
-          </ul>
-        </Section>
-
-        <Section icon={FlaskConical} title="Testery">
-          <div className="flex flex-wrap gap-2">
-            {ev.testers.map((t) => (
-              <span key={t} className="text-xs bg-muted px-2.5 py-1 rounded-full font-mono">{t}</span>
-            ))}
-          </div>
-        </Section>
+      {/* Full data table */}
+      <div className="bg-card border border-border rounded-xl overflow-hidden">
+        <Table>
+          <TableBody>
+            {rows.map((row, i) => {
+              const isSection = row.label === "PROTOKÓŁ";
+              return (
+                <TableRow key={i} className={isSection ? "bg-muted/50" : ""}>
+                  <TableCell className="font-medium text-muted-foreground w-[240px] whitespace-nowrap text-sm py-2.5 px-4">
+                    {row.label}
+                  </TableCell>
+                  <TableCell className="text-sm py-2.5 px-4">
+                    {isSection ? <span className="font-semibold text-foreground">—</span> : row.value}
+                  </TableCell>
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
       </div>
-
-      {/* Notes */}
-      {ev.notes && (
-        <Section icon={StickyNote} title="Notatki">
-          <p className="text-sm text-muted-foreground">{ev.notes}</p>
-        </Section>
-      )}
     </motion.div>
   );
 }
