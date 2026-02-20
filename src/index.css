@@ -157,3 +157,15 @@
     background-clip: text;
   }
 }
+
+/* Admin resizable table columns */
+.admin-table th {
+  resize: horizontal;
+  overflow: hidden;
+  min-width: 60px;
+  cursor: col-resize;
+}
+
+.admin-table th:active {
+  border-right: 2px solid hsl(var(--primary));
+}

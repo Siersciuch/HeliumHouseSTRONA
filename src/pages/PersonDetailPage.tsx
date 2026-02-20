@@ -2,10 +2,11 @@ import { useParams, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { mockPeople } from "@/data/mock-data";
 import { mockEvents } from "@/data/mock-events";
-import { ArrowLeft, Phone, Mail, MapPin, Shield, Key, Car, IdCard, Smartphone, Clock, StickyNote, ShieldCheck } from "lucide-react";
+import { ArrowLeft, Phone, Mail, MapPin, Shield, Key, Car, IdCard, Smartphone, Clock, StickyNote, ShieldCheck, UserCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { addDays, format } from "date-fns";
+import { useAuth } from "@/contexts/AuthContext";
 
 // Billing months: 26th prev → 25th current — reversed order (April first, January last)
 const billingMonths = [
@@ -32,7 +33,9 @@ const DAYS_SHORT = ["Nd", "Pn", "Wt", "Śr", "Cz", "Pt", "Sb"];
 export default function PersonDetailPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { user, impersonate } = useAuth();
   const person = mockPeople.find((p) => p.id === id);
+  const isAdmin = user?.role === "admin";
 
   if (!person) {
     return (
@@ -64,6 +67,20 @@ export default function PersonDetailPage() {
         <div className="flex-1">
           <h1 className="text-2xl font-bold">{person.name}</h1>
         </div>
+        {isAdmin && (
+          <Button
+            variant="destructive"
+            size="lg"
+            className="font-bold text-sm gap-2"
+            onClick={() => {
+              impersonate(person.id);
+              navigate("/");
+            }}
+          >
+            <UserCheck className="h-5 w-5" />
+            Zaloguj się jako ta osoba
+          </Button>
+        )}
       </div>
 
       {/* All person info */}

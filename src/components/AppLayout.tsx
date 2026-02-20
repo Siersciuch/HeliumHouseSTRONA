@@ -57,15 +57,17 @@ interface AppLayoutProps {
 }
 
 export default function AppLayout({ children }: AppLayoutProps) {
-  const { user, logout } = useAuth();
+  const { user, logout, isImpersonating, realUser, stopImpersonating } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const isMobile = useIsMobile();
   const [sidebarOpen, setSidebarOpen] = useState(!isMobile);
   const [expanded, setExpanded] = useState(false);
   const navigate = useNavigate();
+  // When impersonating, show admin nav but user sees crew view
+  const effectiveRole = isImpersonating ? "crew" : user?.role;
 
   const visibleItems = navItems.filter(
-    (item) => !item.adminOnly || user?.role === "admin"
+    (item) => !item.adminOnly || effectiveRole === "admin" || isImpersonating
   );
 
   const closeSidebarOnMobile = () => {
@@ -238,6 +240,19 @@ export default function AppLayout({ children }: AppLayoutProps) {
             </Button>
             <div className="flex-1" />
           </header>
+
+          {/* Impersonation banner */}
+          {isImpersonating && (
+            <div className="bg-destructive text-destructive-foreground px-4 py-2 flex items-center justify-between text-sm font-medium">
+              <span>Zalogowano jako: {user?.name} (widok tej osoby)</span>
+              <button
+                onClick={() => { stopImpersonating(); navigate("/"); }}
+                className="underline font-bold hover:opacity-80"
+              >
+                Wróć do konta admina
+              </button>
+            </div>
+          )}
 
           {/* Page content */}
           <main className="flex-1 p-4 md:p-6">
