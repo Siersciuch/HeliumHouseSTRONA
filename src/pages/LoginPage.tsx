@@ -186,7 +186,7 @@ const LoginPage = () => {
                 </Button>
 
                 <p className="text-xs text-muted-foreground text-center mt-4">
-                  Demo: admin / admin123
+                  Pierwsze hasło: <span className="font-medium">Kocham Siersciucha</span>
                 </p>
               </motion.form>
             )}

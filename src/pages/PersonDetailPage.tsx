@@ -68,16 +68,16 @@ export default function PersonDetailPage() {
   const compactMonths = ["Marzec", "Kwiecień"];
 
   const infoItems: { icon: React.ReactNode; label: string; value: string; highlight?: boolean }[] = [
-    { icon: <Phone className="h-4 w-4 text-muted-foreground" />, label: "Telefon", value: person.phone || "—" },
-    { icon: <Mail className="h-4 w-4 text-muted-foreground" />, label: "Email", value: person.email || "—" },
-    { icon: <MapPin className="h-4 w-4 text-muted-foreground" />, label: "Miasto", value: person.city || "—" },
-    { icon: <Car className="h-4 w-4 text-muted-foreground" />, label: "Prawo jazdy", value: person.drivingLicense || "—" },
+    { icon: <Phone className="h-4 w-4 text-muted-foreground" />, label: "Telefon", value: person.phone || "" },
+    { icon: <Mail className="h-4 w-4 text-muted-foreground" />, label: "Email", value: person.email || "" },
+    { icon: <MapPin className="h-4 w-4 text-muted-foreground" />, label: "Miasto", value: person.city || "" },
+    { icon: <Car className="h-4 w-4 text-muted-foreground" />, label: "Prawo jazdy", value: person.drivingLicense || "" },
     { icon: <IdCard className="h-4 w-4 text-muted-foreground" />, label: "Upr. elektryczne", value: person.electricalCert ? "Tak" : "Nie" },
     { icon: <IdCard className="h-4 w-4 text-muted-foreground" />, label: "Upr. wysokościowe", value: person.heightCert ? "Tak" : "Nie" },
     { icon: <Key className="h-4 w-4 text-warning" />, label: "Klucze magazynu", value: person.hasKeys ? "Tak" : "Nie" },
     { icon: <ShieldCheck className="h-4 w-4 text-muted-foreground" />, label: "2FA", value: person.twoFA ? "Tak" : "Nie" },
-    { icon: <Smartphone className="h-4 w-4 text-muted-foreground" />, label: "Urządzenia", value: person.devices || "—" },
-    { icon: <Clock className="h-4 w-4 text-muted-foreground" />, label: "Ost. logowanie", value: person.lastLogin || "—" },
+    { icon: <Smartphone className="h-4 w-4 text-muted-foreground" />, label: "Urządzenia", value: person.devices || "" },
+    { icon: <Clock className="h-4 w-4 text-muted-foreground" />, label: "Ost. logowanie", value: person.lastLogin || "" },
   ];
 
   if (person.isAdmin) {
@@ -181,17 +181,17 @@ export default function PersonDetailPage() {
                       return (
                         <TableRow key={dateStr} className={rowBg}>
                           <EditableCell value={format(day, "dd.MM.yyyy")} className={`text-xs text-muted-foreground ${compactCls}`} />
-                          <EditableCell value="—" className={`text-xs text-muted-foreground/50 ${compactCls}`} />
-                          <EditableCell value="—" className={`text-xs text-muted-foreground/50 ${compactCls}`} />
-                          <EditableCell value="—" className={`text-xs text-muted-foreground/50 ${compactCls}`} />
-                          <EditableCell value="—" className={`text-xs text-muted-foreground/50 ${compactCls}`} />
-                          <EditableCell value="—" className={`text-xs text-muted-foreground/50 ${compactCls}`} />
-                          <EditableCell value="—" className={`text-xs text-muted-foreground/50 ${compactCls}`} />
-                          <EditableCell value="—" className={`text-xs text-muted-foreground/50 ${compactCls}`} />
-                          <EditableCell value="—" className={`text-xs text-muted-foreground/50 ${compactCls}`} />
-                          <EditableCell value="—" className={`text-xs text-muted-foreground/50 ${compactCls}`} />
-                          <EditableCell value="—" className={`text-xs text-muted-foreground/50 ${compactCls}`} />
-                          <EditableCell value="—" className={`text-xs text-muted-foreground/50 ${compactCls}`} />
+                          <EditableCell value="" className={`text-xs text-muted-foreground/50 ${compactCls}`} />
+                          <EditableCell value="" className={`text-xs text-muted-foreground/50 ${compactCls}`} />
+                          <EditableCell value="" className={`text-xs text-muted-foreground/50 ${compactCls}`} />
+                          <EditableCell value="" className={`text-xs text-muted-foreground/50 ${compactCls}`} />
+                          <EditableCell value="" className={`text-xs text-muted-foreground/50 ${compactCls}`} />
+                          <EditableCell value="" className={`text-xs text-muted-foreground/50 ${compactCls}`} />
+                          <EditableCell value="" className={`text-xs text-muted-foreground/50 ${compactCls}`} />
+                          <EditableCell value="" className={`text-xs text-muted-foreground/50 ${compactCls}`} />
+                          <EditableCell value="" className={`text-xs text-muted-foreground/50 ${compactCls}`} />
+                          <EditableCell value="" className={`text-xs text-muted-foreground/50 ${compactCls}`} />
+                          <EditableCell value="" className={`text-xs text-muted-foreground/50 ${compactCls}`} />
                         </TableRow>
                       );
                     }
@@ -205,17 +205,17 @@ export default function PersonDetailPage() {
                         {idx === 0 && (
                           <EditableCell value={format(day, "dd.MM.yyyy")} className={`text-xs font-medium ${compactCls}`} rowSpan={dayEvents.length} />
                         )}
-                        <EditableCell value={ev.eventName || ev.standShort || "—"} className={`text-xs font-medium ${compactCls}`} />
-                        <EditableCell value={ev.shopNumber || "—"} className={`text-xs ${compactCls}`} />
-                        <EditableCell value={ev.shopLocation || "—"} className={`text-xs ${compactCls}`} />
-                        <EditableCell value={ev.city || "—"} className={`text-xs ${compactCls}`} />
-                        <EditableCell value={ev.vehicle || "—"} className={`text-xs text-muted-foreground ${compactCls}`} />
-                        <EditableCell value={ev.routeLength || "—"} className={`text-xs ${compactCls}`} />
-                        <EditableCell value="—" className={`text-xs ${compactCls}`} />
-                        <EditableCell value={ev.time || "—"} className={`text-xs ${compactCls}`} />
-                        <EditableCell value={ev.photos?.length ? `${ev.photos.length}` : "—"} className={`text-xs ${compactCls}`} />
-                        <EditableCell value={ev.notes || "—"} className={`text-xs ${compactCls}`} />
-                        <EditableCell value="—" className={`text-xs ${compactCls}`} />
+                        <EditableCell value={ev.eventName || ev.standShort || ""} className={`text-xs font-medium ${compactCls}`} />
+                        <EditableCell value={ev.shopNumber || ""} className={`text-xs ${compactCls}`} />
+                        <EditableCell value={ev.shopLocation || ""} className={`text-xs ${compactCls}`} />
+                        <EditableCell value={ev.city || ""} className={`text-xs ${compactCls}`} />
+                        <EditableCell value={ev.vehicle || ""} className={`text-xs text-muted-foreground ${compactCls}`} />
+                        <EditableCell value={ev.routeLength || ""} className={`text-xs ${compactCls}`} />
+                        <EditableCell value="" className={`text-xs ${compactCls}`} />
+                        <EditableCell value={ev.time || ""} className={`text-xs ${compactCls}`} />
+                        <EditableCell value={ev.photos?.length ? `${ev.photos.length}` : ""} className={`text-xs ${compactCls}`} />
+                        <EditableCell value={ev.notes || ""} className={`text-xs ${compactCls}`} />
+                        <EditableCell value="" className={`text-xs ${compactCls}`} />
                       </TableRow>
                     ));
                   })}

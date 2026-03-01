@@ -25,6 +25,13 @@ function statusClass(s: EventTrip["status"]) {
   }
 }
 
+function joinDash(a?: string | null, b?: string | null) {
+  const aa = (a ?? "").trim();
+  const bb = (b ?? "").trim();
+  if (aa && bb) return `${aa} — ${bb}`;
+  return aa || bb || "";
+}
+
 function AlarmVal({ items }: { items: string[] }) {
   if (!items || items.length === 0) return <span className="text-emerald-400 text-xs">Komplet</span>;
   return (
@@ -56,34 +63,34 @@ export default function EventDetailPage() {
   const rows: { label: string; value: string; isAlarm?: boolean; alarmItems?: string[] }[] = [
     { label: "ID eventu", value: ev.id },
     { label: "Data realizacji", value: ev.date },
-    { label: "Rodzaj eventu", value: ev.standShort || "—" },
-    { label: "Sklep / lokalizacja", value: ev.shopNumber ? `${ev.shopNumber} — ${ev.shopLocation}` : (ev.shopLocation || "—") },
+    { label: "Rodzaj eventu", value: ev.standShort || "" },
+    { label: "Sklep / lokalizacja", value: joinDash(ev.shopNumber, ev.shopLocation) },
     { label: "Nazwa eventu / katalog", value: eventName },
-    { label: "Miejscowość i dokładny adres", value: [ev.city, ev.address].filter(Boolean).join(", ") || "—" },
-    { label: "Telefony do sklepu", value: ev.shopPhones?.join(", ") || "—" },
-    { label: "Opis lokalizacji", value: ev.locationDescription || "—" },
-    { label: "Opis eventu", value: ev.eventDescription || "—" },
-    { label: "Czas trwania eventu", value: ev.dateFrom && ev.dateTo ? `${ev.dateFrom} — ${ev.dateTo}` : "—" },
-    { label: "Marki", value: ev.brands?.join(", ") || "—" },
-    { label: "Testery do zabrania", value: ev.testers?.join(", ") || "—" },
+    { label: "Miejscowość i dokładny adres", value: [ev.city, ev.address].filter(Boolean).join(", ") || "" },
+    { label: "Telefony do sklepu", value: ev.shopPhones?.join(", ") || "" },
+    { label: "Opis lokalizacji", value: ev.locationDescription || "" },
+    { label: "Opis eventu", value: ev.eventDescription || "" },
+    { label: "Czas trwania eventu", value: ev.dateFrom && ev.dateTo ? `${ev.dateFrom} — ${ev.dateTo}` : "" },
+    { label: "Marki", value: ev.brands?.join(", ") || "" },
+    { label: "Testery do zabrania", value: ev.testers?.join(", ") || "" },
     { label: "Brakujące testery", value: ev.missingTesters?.join(", ") || "", isAlarm: true, alarmItems: ev.missingTesters },
-    { label: "Kontenty marek", value: ev.brandContents?.join(", ") || "—" },
+    { label: "Kontenty marek", value: ev.brandContents?.join(", ") || "" },
     { label: "Brakujące kontenty", value: ev.missingContents?.join(", ") || "", isAlarm: true, alarmItems: ev.missingContents },
-    { label: "Godz. startu — RAMPA", value: ev.startTimeRamp || "—" },
-    { label: "Godz. startu — SKLEP", value: ev.startTimeShop || "—" },
-    { label: "Samochody, przyczepy", value: ev.vehicles?.join(", ") || "—" },
-    { label: "Czas nieobecności samochodów", value: ev.vehicleAbsenceFrom && ev.vehicleAbsenceTo ? `${ev.vehicleAbsenceFrom} → ${ev.vehicleAbsenceTo}` : "—" },
-    { label: "Długość całej trasy", value: ev.routeLength || "—" },
-    { label: "Czy rozładowujemy samochód", value: ev.unloadType || "—" },
-    { label: "Ekipa", value: ev.crew?.join(", ") || "—" },
-    { label: "Foty", value: ev.photos?.join(", ") || "—" },
-    { label: "Foto-stoisko", value: ev.boothPhotos?.join(", ") || "—" },
-    { label: "Foty tankowanie", value: ev.fuelPhotos?.join(", ") || "—" },
-    { label: "Szpilka do rampy", value: ev.rampPin || "—" },
-    { label: "Pogoda na trasie", value: ev.weatherOnRoute || "—" },
-    { label: "PROTOKÓŁ", value: "—" },
-    { label: "Opis drogi z rampy", value: ev.rampPathDescription || "—" },
-    { label: "Uwagi ogólne", value: ev.notes || "—" },
+    { label: "Godz. startu — RAMPA", value: ev.startTimeRamp || "" },
+    { label: "Godz. startu — SKLEP", value: ev.startTimeShop || "" },
+    { label: "Samochody, przyczepy", value: ev.vehicles?.join(", ") || "" },
+    { label: "Czas nieobecności samochodów", value: ev.vehicleAbsenceFrom && ev.vehicleAbsenceTo ? `${ev.vehicleAbsenceFrom} → ${ev.vehicleAbsenceTo}` : "" },
+    { label: "Długość całej trasy", value: ev.routeLength || "" },
+    { label: "Czy rozładowujemy samochód", value: ev.unloadType || "" },
+    { label: "Ekipa", value: ev.crew?.join(", ") || "" },
+    { label: "Foty", value: ev.photos?.join(", ") || "" },
+    { label: "Foto-stoisko", value: ev.boothPhotos?.join(", ") || "" },
+    { label: "Foty tankowanie", value: ev.fuelPhotos?.join(", ") || "" },
+    { label: "Szpilka do rampy", value: ev.rampPin || "" },
+    { label: "Pogoda na trasie", value: ev.weatherOnRoute || "" },
+    { label: "PROTOKÓŁ", value: "" },
+    { label: "Opis drogi z rampy", value: ev.rampPathDescription || "" },
+    { label: "Uwagi ogólne", value: ev.notes || "" },
   ];
 
   return (
@@ -95,7 +102,7 @@ export default function EventDetailPage() {
         </Button>
         <div className="flex-1 min-w-0">
           <h1 className="text-2xl font-bold">{eventName}</h1>
-          <p className="text-muted-foreground">{ev.client || "Brak klienta"}</p>
+          <p className="text-muted-foreground">{ev.client || ""}</p>
         </div>
         <span className={`text-xs font-medium px-3 py-1.5 rounded-full border ${statusClass(ev.status)}`}>
           {statusLabel(ev.status)}
@@ -115,7 +122,7 @@ export default function EventDetailPage() {
                     className="font-medium text-muted-foreground w-[240px] whitespace-nowrap text-sm py-2.5 px-4"
                   />
                   <EditableCell
-                    value={isSection ? "—" : row.value}
+                    value={isSection ? "" : row.value}
                     className="text-sm py-2.5 px-4"
                   >
                     {row.isAlarm ? <AlarmVal items={row.alarmItems || []} /> : undefined}

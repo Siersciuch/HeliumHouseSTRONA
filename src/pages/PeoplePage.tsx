@@ -53,14 +53,14 @@ export default function PeoplePage() {
                 >
                   <TableCell className="text-center text-muted-foreground font-mono text-sm">{index + 1}</TableCell>
                   <EditableCell value={p.firstName} className="font-medium" />
-                  <EditableCell value={p.lastName || "—"} className="font-medium" />
-                  <EditableCell value={p.phone || "—"} className="text-muted-foreground" />
-                  <EditableCell value={p.email || "—"} className="text-muted-foreground text-xs" />
+                  <EditableCell value={p.lastName || ""} className="font-medium" />
+                  <EditableCell value={p.phone || ""} className="text-muted-foreground" />
+                  <EditableCell value={p.email || ""} className="text-muted-foreground text-xs" />
                   <EditableCell value={p.hasKeys ? "Tak" : "Nie"} className="text-center">
                     {p.hasKeys ? <Key className="h-4 w-4 text-warning mx-auto" /> : <X className="h-4 w-4 text-muted-foreground/30 mx-auto" />}
                   </EditableCell>
-                  <EditableCell value={p.drivingLicense || "—"} className="text-muted-foreground" />
-                  <EditableCell value={p.city || "—"} className="text-muted-foreground" />
+                  <EditableCell value={p.drivingLicense || ""} className="text-muted-foreground" />
+                  <EditableCell value={p.city || ""} className="text-muted-foreground" />
                   <EditableCell value={p.electricalCert ? "Tak" : "Nie"} className="text-center">
                     {p.electricalCert ? <Check className="h-4 w-4 text-emerald-400 mx-auto" /> : <X className="h-4 w-4 text-muted-foreground/30 mx-auto" />}
                   </EditableCell>
@@ -70,9 +70,9 @@ export default function PeoplePage() {
                   <EditableCell value={p.twoFA ? "Tak" : "Nie"} className="text-center">
                     {p.twoFA ? <Check className="h-4 w-4 text-emerald-400 mx-auto" /> : <X className="h-4 w-4 text-muted-foreground/30 mx-auto" />}
                   </EditableCell>
-                  <EditableCell value={p.devices || "—"} className="text-muted-foreground text-xs" />
-                  <EditableCell value={p.lastLogin || "—"} className="text-muted-foreground text-xs" />
-                  <EditableCell value={p.notes || "—"} className="text-muted-foreground text-xs" />
+                  <EditableCell value={p.devices || ""} className="text-muted-foreground text-xs" />
+                  <EditableCell value={p.lastLogin || ""} className="text-muted-foreground text-xs" />
+                  <EditableCell value={p.notes || ""} className="text-muted-foreground text-xs" />
                   <EditableCell value={p.isAdmin ? "Tak" : "Nie"} className="text-center">
                     {p.isAdmin ? <Shield className="h-4 w-4 text-emerald-400 mx-auto" /> : <X className="h-4 w-4 text-muted-foreground/30 mx-auto" />}
                   </EditableCell>

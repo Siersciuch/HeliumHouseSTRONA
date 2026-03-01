@@ -153,7 +153,7 @@ function EventDetailPanel({ event, onClose }: EventDetailPanelProps) {
       className="space-y-4"
     >
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-bold">{event.standShort} — {event.city}</h3>
+        <h3 className="text-lg font-bold">{[event.standShort, event.city].filter(Boolean).join(" — ")}</h3>
         <button onClick={onClose} className="text-muted-foreground hover:text-foreground text-sm">✕</button>
       </div>
 
@@ -174,19 +174,19 @@ function EventDetailPanel({ event, onClose }: EventDetailPanelProps) {
         </div>
         <div>
           <p className="text-muted-foreground text-xs uppercase tracking-wider mb-1">Godziny</p>
-          <p>{event.time || "—"}</p>
+          <p>{event.time || ""}</p>
         </div>
         <div>
           <p className="text-muted-foreground text-xs uppercase tracking-wider mb-1">Adres</p>
-          <p>{event.address || "—"}</p>
+          <p>{event.address || ""}</p>
         </div>
         <div>
           <p className="text-muted-foreground text-xs uppercase tracking-wider mb-1">Telefon</p>
-          <p>{event.shopPhones?.length ? event.shopPhones.join(", ") : "—"}</p>
+          <p>{event.shopPhones?.length ? event.shopPhones.join(", ") : ""}</p>
         </div>
         <div>
           <p className="text-muted-foreground text-xs uppercase tracking-wider mb-1">Kod pocztowy / dane</p>
-          <p>{event.locationDescription || "—"}</p>
+          <p>{event.locationDescription || ""}</p>
         </div>
       </div>
     </motion.div>

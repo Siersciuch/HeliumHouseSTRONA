@@ -41,16 +41,16 @@ export default function TestersPage() {
                     <TableRow key={t.id}>
                       <EditableCell value={String(i + 1)} className="text-muted-foreground" />
                       <EditableCell value={t.name} className="font-medium" />
-                      <EditableCell value={t.quantity > 0 ? String(t.quantity) : "—"} className="text-center" />
-                      <EditableCell value={t.outCount > 0 ? String(t.outCount) : "—"} className="text-center" />
-                      <EditableCell value={t.nfcCode || "—"} className="text-muted-foreground font-mono text-xs" />
-                      <EditableCell value={t.assignedEvent || "—"} className="text-muted-foreground" />
+                      <EditableCell value={t.quantity > 0 ? String(t.quantity) : ""} className="text-center" />
+                      <EditableCell value={t.outCount > 0 ? String(t.outCount) : ""} className="text-center" />
+                      <EditableCell value={t.nfcCode || ""} className="text-muted-foreground font-mono text-xs" />
+                      <EditableCell value={t.assignedEvent || ""} className="text-muted-foreground" />
                       <EditableCell value={t.status} className="">
                         <span className={`text-xs font-medium px-2.5 py-1 rounded-full ${statusColor[t.status]}`}>
                           {t.status}
                         </span>
                       </EditableCell>
-                      <EditableCell value={t.notes || "—"} className="text-muted-foreground text-xs" />
+                      <EditableCell value={t.notes || ""} className="text-muted-foreground text-xs" />
                     </TableRow>
                   ))}
                 </TableBody>

@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useState, useCallback, type ReactNode } from "react";
-import { mockPeople } from "@/data/mock-data";
 
 export interface User {
   id: string;
@@ -8,6 +7,8 @@ export interface User {
   role: "admin" | "crew";
   mustChangePassword: boolean;
 }
+
+type StoredUser = User & { password: string };
 
 interface AuthContextType {
   user: User | null;
@@ -23,12 +24,38 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
-// Mock users
-const MOCK_USERS: (User & { password: string })[] = [
-  { id: "1", login: "admin", password: "admin123", name: "Jan Kowalski", role: "admin", mustChangePassword: false },
-  { id: "2", login: "crew1", password: "crew123", name: "Anna Nowak", role: "crew", mustChangePassword: true },
-  { id: "3", login: "crew2", password: "crew123", name: "Piotr Wiśniewski", role: "crew", mustChangePassword: false },
-];
+// Pierwsze hasło dla każdego użytkownika (bez polskich znaków, dwie części, wielkie litery)
+const DEFAULT_INITIAL_PASSWORD = "Kocham Siersciucha";
+
+const USERS_KEY = "hh_users";
+
+function loadUsers(): StoredUser[] {
+  try {
+    const raw = localStorage.getItem(USERS_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? (parsed as StoredUser[]) : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveUsers(users: StoredUser[]) {
+  localStorage.setItem(USERS_KEY, JSON.stringify(users));
+}
+
+function normalizeName(login: string): string {
+  const trimmed = login.trim();
+  if (!trimmed) return "Użytkownik";
+  return trimmed.charAt(0).toUpperCase() + trimmed.slice(1);
+}
+
+function newId(): string {
+  // Fallback jeśli środowisko nie wspiera crypto.randomUUID
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const c: any = crypto as any;
+  return typeof c?.randomUUID === "function" ? c.randomUUID() : `${Date.now()}_${Math.random().toString(16).slice(2)}`;
+}
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(() => {
@@ -41,9 +68,36 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   });
 
   const login = useCallback(async (username: string, password: string): Promise<boolean> => {
-    const found = MOCK_USERS.find((u) => u.login === username && u.password === password);
-    if (!found) return false;
-    const { password: _, ...userData } = found;
+    const login = username.trim();
+    if (!login) return false;
+
+    const users = loadUsers();
+    const found = users.find((u) => u.login === login);
+
+    // Jeśli użytkownika nie ma jeszcze w systemie, dopuszczamy bootstrap tylko na hasło startowe.
+    if (!found) {
+      if (password !== DEFAULT_INITIAL_PASSWORD) return false;
+
+      const isFirstUser = users.length === 0;
+      const created: StoredUser = {
+        id: newId(),
+        login,
+        name: normalizeName(login),
+        role: isFirstUser ? "admin" : "crew",
+        mustChangePassword: true,
+        password: DEFAULT_INITIAL_PASSWORD,
+      };
+      const next = [...users, created];
+      saveUsers(next);
+      const { password: _pw, ...userData } = created;
+      setUser(userData);
+      localStorage.setItem("hh_user", JSON.stringify(userData));
+      return true;
+    }
+
+    // Normalne logowanie
+    if (found.password !== password) return false;
+    const { password: _pw, ...userData } = found;
     setUser(userData);
     localStorage.setItem("hh_user", JSON.stringify(userData));
     return true;
@@ -58,7 +112,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const changePassword = useCallback(async (newPassword: string): Promise<boolean> => {
     if (!user) return false;
-    const updated = { ...user, mustChangePassword: false };
+    const users = loadUsers();
+    const idx = users.findIndex((u) => u.login === user.login);
+    if (idx === -1) return false;
+
+    const updatedStored: StoredUser = {
+      ...users[idx],
+      password: newPassword,
+      mustChangePassword: false,
+    };
+
+    const next = [...users];
+    next[idx] = updatedStored;
+    saveUsers(next);
+
+    const { password: _pw, ...updated } = updatedStored;
     setUser(updated);
     localStorage.setItem("hh_user", JSON.stringify(updated));
     return true;
@@ -68,11 +136,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (!user || user.role !== "admin") return;
     setRealUser(user);
     localStorage.setItem("hh_real_user", JSON.stringify(user));
-    const person = mockPeople.find((p) => p.id === personId);
     const impersonated: User = {
       id: personId,
       login: personId,
-      name: person?.name || personId,
+      name: personId,
       role: "crew",
       mustChangePassword: false,
     };

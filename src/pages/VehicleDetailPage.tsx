@@ -76,7 +76,7 @@ export default function VehicleDetailPage() {
             <TableBody>
               <TableRow>
                 {infoRows.map((r) => (
-                  <EditableCell key={r.label} value={r.value || "—"} />
+                  <EditableCell key={r.label} value={r.value || ""} />
                 ))}
               </TableRow>
             </TableBody>
@@ -107,12 +107,12 @@ export default function VehicleDetailPage() {
                   <TableRow key={ev.id} className="cursor-pointer hover:bg-accent/30" onClick={() => navigate(`/events/${ev.id}`)}>
                     <EditableCell value={String(idx + 1)} />
                     <EditableCell value={ev.eventName || `${ev.date} ${ev.standShort} ${ev.city}`} className="font-medium" />
-                    <EditableCell value={ev.shopLocation || ev.city || "—"} />
-                    <EditableCell value={ev.routeLength || "—"} />
-                    <EditableCell value={ev.crew.length ? ev.crew.join(", ") : "—"} className="text-muted-foreground" />
-                    <EditableCell value={ev.photos.length ? ev.photos.join(", ") : "—"} />
-                    <EditableCell value={ev.fuelPhotos.length ? ev.fuelPhotos.join(", ") : "—"} />
-                    <EditableCell value={ev.notes || "—"} />
+                    <EditableCell value={ev.shopLocation || ev.city || ""} />
+                    <EditableCell value={ev.routeLength || ""} />
+                    <EditableCell value={ev.crew.length ? ev.crew.join(", ") : ""} className="text-muted-foreground" />
+                    <EditableCell value={ev.photos.length ? ev.photos.join(", ") : ""} />
+                    <EditableCell value={ev.fuelPhotos.length ? ev.fuelPhotos.join(", ") : ""} />
+                    <EditableCell value={ev.notes || ""} />
                   </TableRow>
                 ))}
               </TableBody>

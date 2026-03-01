@@ -36,7 +36,7 @@ export default function ShopsPage() {
                   <EditableCell value={s.postalCode} className="text-muted-foreground text-xs" />
                   <EditableCell value={s.phone} className="text-muted-foreground text-xs" />
                   <EditableCell value={s.email} className="text-muted-foreground text-xs" />
-                  <EditableCell value={s.phone2 || "—"} className="text-muted-foreground text-xs" />
+                  <EditableCell value={s.phone2 || ""} className="text-muted-foreground text-xs" />
                   <EditableCell value={s.hours} className="text-muted-foreground text-xs" />
                   <EditableCell value={s.hasElevator ? "Tak" : "Nie"} className="text-center">
                     {s.hasElevator ? <Check className="h-4 w-4 text-emerald-400 mx-auto" /> : <X className="h-4 w-4 text-muted-foreground/30 mx-auto" />}

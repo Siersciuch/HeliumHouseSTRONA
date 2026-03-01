@@ -15,19 +15,19 @@ const standComponents: Record<string, { name: string; dimensions: string; quanti
     { name: "Lada", dimensions: "120x60x100 cm", quantity: 1, weight: "25 kg" },
     { name: "Regał na testery", dimensions: "80x40x180 cm", quantity: 2, weight: "12 kg" },
     { name: "Monitor 55\"", dimensions: "125x72 cm", quantity: 1, weight: "18 kg" },
-    { name: "Oświetlenie LED", dimensions: "—", quantity: 4, weight: "2 kg" },
-    { name: "Krzesło barowe", dimensions: "—", quantity: 2, weight: "5 kg" },
+    { name: "Oświetlenie LED", dimensions: "", quantity: 4, weight: "2 kg" },
+    { name: "Krzesło barowe", dimensions: "", quantity: 2, weight: "5 kg" },
   ],
   MUA: [
     { name: "Stanowisko makijażowe", dimensions: "100x60x200 cm", quantity: 2, weight: "20 kg" },
     { name: "Lustro LED", dimensions: "60x80 cm", quantity: 2, weight: "8 kg" },
-    { name: "Stołek", dimensions: "—", quantity: 2, weight: "4 kg" },
+    { name: "Stołek", dimensions: "", quantity: 2, weight: "4 kg" },
     { name: "Organizer na kosmetyki", dimensions: "40x30x25 cm", quantity: 2, weight: "3 kg" },
   ],
   MUC: [
     { name: "Moduł ścienny", dimensions: "150x220 cm", quantity: 2, weight: "18 kg" },
     { name: "Półka ekspozycyjna", dimensions: "100x30 cm", quantity: 4, weight: "6 kg" },
-    { name: "Oświetlenie", dimensions: "—", quantity: 6, weight: "1.5 kg" },
+    { name: "Oświetlenie", dimensions: "", quantity: 6, weight: "1.5 kg" },
   ],
 };
 

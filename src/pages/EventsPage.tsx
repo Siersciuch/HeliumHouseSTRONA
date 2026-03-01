@@ -177,7 +177,7 @@ export default function EventsPage() {
                 <EditableCell value={ev.standShort} />
                 <EditableCell value={ev.vehicle.split("(")[0].trim()} />
                 <EditableCell value={ev.crew.join(", ")} />
-                <EditableCell value={ev.testers?.join(", ") || "—"} />
+                <EditableCell value={ev.testers?.join(", ") || ""} />
                 <EditableCell value={ev.time} />
                 <td className="p-2">
                   <span className={`text-xs font-medium px-2.5 py-1 rounded-full whitespace-nowrap ${statusClass(ev.status)}`}>

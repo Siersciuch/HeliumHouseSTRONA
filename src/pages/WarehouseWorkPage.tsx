@@ -51,12 +51,19 @@ export default function WarehouseWorkPage() {
   }
 
   if (finished) {
+    const range = startTime && endTime
+      ? `${format(startTime, "HH:mm")} — ${format(endTime, "HH:mm")}`
+      : startTime
+        ? format(startTime, "HH:mm")
+        : endTime
+          ? format(endTime, "HH:mm")
+          : "";
     return (
       <div className="flex flex-col items-center justify-center h-[calc(100vh-5rem)] gap-4">
         <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="text-center space-y-2">
           <p className="text-2xl font-bold">Praca zakończona</p>
           <p className="text-muted-foreground">
-            {startTime && format(startTime, "HH:mm")} — {endTime && format(endTime, "HH:mm")}
+            {range}
           </p>
           <p className="text-muted-foreground">Zdjęcia: {photos.length}</p>
         </motion.div>
